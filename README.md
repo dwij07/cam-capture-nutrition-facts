@@ -1,73 +1,68 @@
-# Welcome to your Lovable project
 
-## Project info
+# Camera Nutrition Tracking App
 
-**URL**: https://lovable.dev/projects/5f53b813-ab6b-4eed-b419-b919814aba67
+A web application for tracking nutrition information using on-device food recognition with TensorFlow.js.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- Upload or take photos of food
+- On-device image classification using TensorFlow.js and MobileNet
+- Display of nutrition facts (calories, protein, carbs, fat)
+- Clean, modern UI with responsive design
 
-**Use Lovable**
+## Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/5f53b813-ab6b-4eed-b419-b919814aba67) and start prompting.
+- **Frontend**: React, TypeScript, TailwindCSS, shadcn/ui
+- **ML**: TensorFlow.js, MobileNet pre-trained model
+- **Data**: Static nutrition database (expandable)
 
-Changes made via Lovable will be committed automatically to this repo.
+## How to Run Locally
 
-**Use your preferred IDE**
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open your browser and navigate to `http://localhost:8080`
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Implementation Details
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Machine Learning Model
 
-Follow these steps:
+This application uses the MobileNet model via TensorFlow.js for food recognition. MobileNet is a lightweight convolutional neural network pre-trained on the ImageNet dataset, which includes many common food items.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+In a production environment, this could be replaced with a model specifically trained for food recognition.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Nutrition Data
 
-# Step 3: Install the necessary dependencies.
-npm i
+The nutrition data is currently stored as a static dataset in `src/data/nutritionData.ts`. In a production application, this would be replaced with a more comprehensive database or API call.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+### Privacy
 
-**Edit a file directly in GitHub**
+All processing is done on-device using TensorFlow.js, meaning that images never leave the user's browser.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Future Improvements
 
-**Use GitHub Codespaces**
+- Add camera functionality for mobile devices
+- Implement a more comprehensive food database
+- Train a custom model specifically for food recognition
+- Add portion size estimation
+- Allow users to save their food history
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Requirements
 
-## What technologies are used for this project?
+- Node.js 16+
+- Modern browser with JavaScript enabled
 
-This project is built with:
+## Dependencies
 
-- Vite
-- TypeScript
 - React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/5f53b813-ab6b-4eed-b419-b919814aba67) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- TypeScript
+- TensorFlow.js
+- MobileNet model
+- TailwindCSS
+- shadcn/ui components

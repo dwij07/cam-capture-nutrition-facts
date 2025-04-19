@@ -28,6 +28,12 @@ export default {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
 				},
+                nutrition: {
+                    protein: '#4CAF50',
+                    carbs: '#FF9800',
+                    fat: '#F44336',
+                    calories: '#2196F3',
+                },
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))'
