@@ -1,8 +1,7 @@
-
 import * as tf from '@tensorflow/tfjs';
 import * as mobilenet from '@tensorflow-models/mobilenet';
-import { FoodItem, findFoodByClass as findBasicFoodByClass } from '@/data/nutritionData';
-import { EnhancedFoodItem, findEnhancedFoodByClass } from '@/data/enhancedNutritionData';
+import { EnhancedFoodItem } from '@/data/enhancedNutritionData';
+import { indianFoods, chineseFoods, americanFoods } from '@/data/cuisineData';
 
 // Define the prediction result interface
 export interface PredictionResult {
@@ -11,8 +10,15 @@ export interface PredictionResult {
 }
 
 export interface ExtendedPredictionResult extends PredictionResult {
-  matchedFood?: EnhancedFoodItem; // Changed from FoodItem to EnhancedFoodItem
+  matchedFood?: EnhancedFoodItem;
 }
+
+// Combine all food data
+const allFoods: EnhancedFoodItem[] = [
+  ...indianFoods,
+  ...chineseFoods,
+  ...americanFoods
+];
 
 // Singleton instance of the model
 let modelInstance: mobilenet.MobileNet | null = null;
@@ -63,10 +69,12 @@ export const classifyImage = async (
     const model = await loadModel();
     console.log('Classifying image...');
     
-    // Apply data augmentation techniques to enhance prediction
-    const predictions = await model.classify(imageElement, topK);
+    // Get multiple predictions to improve matching
+    const predictions = await model.classify(imageElement, topK * 2);
     
-    console.log('Classification results:', predictions);
+    // Enhanced logging for debugging
+    console.log('Raw predictions:', predictions);
+    
     return predictions;
   } catch (error) {
     console.error('Failed to classify image:', error);
@@ -85,20 +93,48 @@ export const recognizeFood = async (
   imageElement: HTMLImageElement,
   topK = 3
 ): Promise<ExtendedPredictionResult[]> => {
-  // Get base predictions
-  const predictions = await classifyImage(imageElement, topK * 2); // Get more predictions to increase chances of food match
+  // Get more base predictions to increase matching accuracy
+  const predictions = await classifyImage(imageElement, topK * 3);
   
-  // Match predictions with food database
+  // Enhanced matching algorithm
   const extendedResults: ExtendedPredictionResult[] = [];
+  const processedMatches = new Set<string>();
   
   for (const prediction of predictions) {
-    // Use findEnhancedFoodByClass instead of findFoodByClass to get EnhancedFoodItem
-    const matchedFood = findEnhancedFoodByClass(prediction.className);
+    const normalizedPrediction = prediction.className.toLowerCase();
     
-    if (matchedFood) {
+    // Find matching foods using more sophisticated matching
+    const matchingFoods = allFoods.filter(food => {
+      if (processedMatches.has(food.name)) return false;
+      
+      return food.classes.some(cls => {
+        const normalizedClass = cls.toLowerCase();
+        return normalizedClass.includes(normalizedPrediction) ||
+               normalizedPrediction.includes(normalizedClass);
+      });
+    });
+    
+    // Sort matches by relevance
+    matchingFoods.sort((a, b) => {
+      const aMatch = a.classes.find(cls => 
+        cls.toLowerCase().includes(normalizedPrediction)
+      ) || '';
+      const bMatch = b.classes.find(cls => 
+        cls.toLowerCase().includes(normalizedPrediction)
+      ) || '';
+      
+      return bMatch.length - aMatch.length;
+    });
+    
+    // Add best match if found
+    if (matchingFoods.length > 0) {
+      const bestMatch = matchingFoods[0];
+      processedMatches.add(bestMatch.name);
+      
       extendedResults.push({
-        ...prediction,
-        matchedFood
+        className: bestMatch.name,
+        probability: prediction.probability,
+        matchedFood: bestMatch
       });
       
       // Stop once we have enough matches
@@ -108,7 +144,7 @@ export const recognizeFood = async (
     }
   }
   
-  return extendedResults.slice(0, topK);
+  return extendedResults;
 };
 
 // Pre-load the model when the service is imported
