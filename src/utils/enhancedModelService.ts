@@ -1,7 +1,8 @@
 
 import * as tf from '@tensorflow/tfjs';
 import * as mobilenet from '@tensorflow-models/mobilenet';
-import { FoodItem, findFoodByClass } from '@/data/nutritionData';
+import { FoodItem, findFoodByClass as findBasicFoodByClass } from '@/data/nutritionData';
+import { EnhancedFoodItem, findEnhancedFoodByClass } from '@/data/enhancedNutritionData';
 
 // Define the prediction result interface
 export interface PredictionResult {
@@ -10,7 +11,7 @@ export interface PredictionResult {
 }
 
 export interface ExtendedPredictionResult extends PredictionResult {
-  matchedFood?: FoodItem;
+  matchedFood?: EnhancedFoodItem; // Changed from FoodItem to EnhancedFoodItem
 }
 
 // Singleton instance of the model
@@ -91,7 +92,8 @@ export const recognizeFood = async (
   const extendedResults: ExtendedPredictionResult[] = [];
   
   for (const prediction of predictions) {
-    const matchedFood = findFoodByClass(prediction.className);
+    // Use findEnhancedFoodByClass instead of findFoodByClass to get EnhancedFoodItem
+    const matchedFood = findEnhancedFoodByClass(prediction.className);
     
     if (matchedFood) {
       extendedResults.push({
