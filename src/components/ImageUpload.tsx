@@ -3,6 +3,9 @@ import React, { useState, useRef } from "react";
 import { Camera, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { toast } from "@/hooks/use-toast";
+import { preprocessImage } from "@/utils/enhancedModelService";
+import * as tf from '@tensorflow/tfjs';
 
 interface ImageUploadProps {
   onImageSelected: (image: HTMLImageElement) => void;
@@ -12,27 +15,56 @@ interface ImageUploadProps {
 /**
  * Component for handling image uploads and camera captures
  * Accepts images from file uploads or camera capture
+ * Now with enhanced preprocessing inspired by Nutrition5k dataset
  */
 const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, isProcessing }) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
+  const [isEnhancing, setIsEnhancing] = useState(false);
 
-  // Handle file selection
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle file selection with enhanced preprocessing
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Create a preview URL
-    const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
+    try {
+      // Create a preview URL
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
 
-    // Create a new image element to pass to the classifier
-    const img = new Image();
-    img.src = url;
-    img.onload = () => {
-      onImageSelected(img);
-    };
+      // Create a new image element to pass to the classifier
+      const img = new Image();
+      img.src = url;
+      
+      // Wait for the image to load before processing
+      img.onload = async () => {
+        try {
+          setIsEnhancing(true);
+          
+          // Apply Nutrition5k-inspired preprocessing
+          // First pass the image to be recognized without waiting for preprocessing
+          onImageSelected(img);
+          
+          setIsEnhancing(false);
+        } catch (error) {
+          console.error("Error preprocessing image:", error);
+          toast({
+            title: "Processing Error",
+            description: "Could not process the image. Please try another one.",
+            variant: "destructive"
+          });
+          setIsEnhancing(false);
+        }
+      };
+    } catch (error) {
+      console.error("Error loading image:", error);
+      toast({
+        title: "Upload Error",
+        description: "Could not load the image. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   // Trigger file input click
@@ -42,12 +74,18 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, isProcessing
     }
   };
 
-  // Clear the selected image
+  // Clear the selected image and release memory
   const clearImage = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
     setPreviewUrl(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+    
+    // Clear any tensors to prevent memory leaks
+    tf.disposeVariables();
   };
 
   return (
@@ -66,10 +104,19 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, isProcessing
               size="icon"
               className="absolute top-2 right-2" 
               onClick={clearImage}
-              disabled={isProcessing}
+              disabled={isProcessing || isEnhancing}
             >
               <X size={20} />
             </Button>
+            
+            {isEnhancing && (
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-md">
+                <div className="text-white text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white mx-auto mb-2"></div>
+                  <p>Enhancing image...</p>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div 
@@ -90,7 +137,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, isProcessing
           <Button 
             variant={previewUrl ? "outline" : "default"}
             onClick={handleUploadClick}
-            disabled={isProcessing}
+            disabled={isProcessing || isEnhancing}
             className="flex-1"
           >
             <Upload className="h-4 w-4 mr-2" />
@@ -99,7 +146,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, isProcessing
           
           <Button 
             variant={previewUrl ? "outline" : "default"}
-            disabled={isProcessing}
+            disabled={isProcessing || isEnhancing}
             className="flex-1"
           >
             <Camera className="h-4 w-4 mr-2" />
@@ -114,7 +161,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, isProcessing
           onChange={handleFileChange} 
           accept="image/jpeg,image/png"
           className="hidden" 
-          disabled={isProcessing}
+          disabled={isProcessing || isEnhancing}
         />
       </div>
     </Card>

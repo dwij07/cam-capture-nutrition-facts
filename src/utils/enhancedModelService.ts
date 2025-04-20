@@ -81,9 +81,9 @@ export const preprocessImage = async (imageElement: HTMLImageElement): Promise<t
     const normalized = imageTensor.toFloat().div(tf.scalar(127.5)).sub(tf.scalar(1));
     
     // Ensure proper dimensions for MobileNet (224x224)
-    // Fix the TypeScript error by explicitly defining the return type
-    return tf.image.resizeBilinear(normalized, [224, 224]) as tf.Tensor3D;
+    const resized = tf.image.resizeBilinear(normalized, [224, 224]);
     
+    return resized as tf.Tensor3D;
   } catch (error) {
     console.error('Failed to preprocess image:', error);
     throw new Error('Failed to process the image for analysis');
