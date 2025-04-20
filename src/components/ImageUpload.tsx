@@ -1,6 +1,6 @@
 
 import React, { useState, useRef } from "react";
-import { Camera, Upload, X } from "lucide-react";
+import { Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
@@ -43,7 +43,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, isProcessing
           setIsEnhancing(true);
           
           // Apply Nutrition5k-inspired preprocessing
-          // First pass the image to be recognized without waiting for preprocessing
+          await preprocessImage(img);
+          
+          // Pass the image for recognition
           onImageSelected(img);
           
           setIsEnhancing(false);
@@ -113,7 +115,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, isProcessing
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-md">
                 <div className="text-white text-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white mx-auto mb-2"></div>
-                  <p>Enhancing image...</p>
+                  <p>Enhancing image using Nutrition5k techniques...</p>
                 </div>
               </div>
             )}
@@ -142,15 +144,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, isProcessing
           >
             <Upload className="h-4 w-4 mr-2" />
             Upload Image
-          </Button>
-          
-          <Button 
-            variant={previewUrl ? "outline" : "default"}
-            disabled={isProcessing || isEnhancing}
-            className="flex-1"
-          >
-            <Camera className="h-4 w-4 mr-2" />
-            Take Photo
           </Button>
         </div>
         
