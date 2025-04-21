@@ -1,4 +1,3 @@
-
 import * as tf from '@tensorflow/tfjs';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import { EnhancedFoodItem } from '@/data/enhancedNutritionData';
@@ -76,19 +75,16 @@ export const loadModel = async (): Promise<mobilenet.MobileNet> => {
  */
 export const preprocessImage = async (imageElement: HTMLImageElement): Promise<tf.Tensor3D> => {
   try {
-    // Convert to tensor
-    const imageTensor = tf.browser.fromPixels(imageElement);
-    
-    // Normalize pixel values to [-1, 1]
-    const normalized = imageTensor.toFloat().div(tf.scalar(127.5)).sub(tf.scalar(1));
-    
-    // Ensure proper dimensions for MobileNet (224x224) with explicit typing
-    // Use cast directly on the operation to ensure TypeScript recognizes it as Tensor3D
-    const resized = tf.tidy(() => {
-      return tf.image.resizeBilinear(normalized, [224, 224]) as tf.Tensor3D;
+    return tf.tidy(() => {
+      // Convert to tensor
+      const imageTensor = tf.browser.fromPixels(imageElement);
+      
+      // Normalize pixel values to [-1, 1]
+      const normalized = imageTensor.toFloat().div(tf.scalar(127.5)).sub(tf.scalar(1));
+      
+      // Resize to 224x224 which is expected by MobileNet
+      return tf.image.resizeBilinear(normalized, [224, 224]);
     });
-    
-    return resized;
   } catch (error) {
     console.error('Failed to preprocess image:', error);
     throw new Error('Failed to process the image for analysis');
