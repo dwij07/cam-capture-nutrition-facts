@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
@@ -27,11 +26,28 @@ import {
 } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
-// Initialize Supabase client
+// Initialize Supabase client with error handling
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+let supabase;
+
+// Check if environment variables are properly set
+const isSupabaseConfigured = 
+  supabaseUrl && 
+  supabaseKey && 
+  supabaseUrl.startsWith('http') && 
+  supabaseUrl !== 'https://your-project-id.supabase.co' &&
+  supabaseKey !== 'your-anon-key';
+
+try {
+  if (isSupabaseConfigured) {
+    supabase = createClient(supabaseUrl, supabaseKey);
+  }
+} catch (error) {
+  console.error("Failed to initialize Supabase client:", error);
+}
 
 // Define schemas for form validation
 const loginSchema = z.object({
@@ -81,6 +97,15 @@ const Auth: React.FC = () => {
 
   // Handle login submission
   const onLoginSubmit = async (values: LoginValues) => {
+    if (!isSupabaseConfigured || !supabase) {
+      toast({
+        variant: "destructive",
+        title: "Supabase not configured",
+        description: "Please set up your Supabase environment variables",
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -111,6 +136,15 @@ const Auth: React.FC = () => {
 
   // Handle signup submission
   const onSignupSubmit = async (values: SignupValues) => {
+    if (!isSupabaseConfigured || !supabase) {
+      toast({
+        variant: "destructive",
+        title: "Supabase not configured",
+        description: "Please set up your Supabase environment variables",
+      });
+      return;
+    }
+    
     setIsLoading(true);
     try {
       // Register the user
@@ -168,6 +202,15 @@ const Auth: React.FC = () => {
           <CardTitle className="text-2xl font-bold text-primary">NutriTrack</CardTitle>
           <CardDescription>Track your diet and nutrition journey</CardDescription>
         </CardHeader>
+        
+        {!isSupabaseConfigured && (
+          <Alert className="mx-6 mb-4">
+            <AlertDescription>
+              Supabase credentials not configured. Please check your environment variables.
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <Tabs defaultValue="login" className="w-full">
           <TabsList className="grid grid-cols-2 w-full">
             <TabsTrigger value="login">Login</TabsTrigger>
