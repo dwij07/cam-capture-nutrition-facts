@@ -13,9 +13,8 @@ interface ImageUploadProps {
 }
 
 /**
- * Component for handling image uploads and camera captures
- * Accepts images from file uploads or camera capture
- * Now with enhanced preprocessing inspired by Nutrition5k dataset
+ * Component for handling image uploads
+ * Enhanced with preprocessing techniques to improve recognition accuracy
  */
 const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, isProcessing }) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -29,6 +28,25 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, isProcessing
     if (!file) return;
 
     try {
+      // Check file size and type
+      if (file.size > 10 * 1024 * 1024) { // 10MB max
+        toast({
+          title: "File too large",
+          description: "Please select an image under 10MB",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select a valid image file (JPEG, PNG, etc.)",
+          variant: "destructive"
+        });
+        return;
+      }
+
       // Create a preview URL
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
@@ -42,10 +60,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, isProcessing
         try {
           setIsEnhancing(true);
           
-          // Apply Nutrition5k-inspired preprocessing
+          // Apply preprocessing for better recognition
           await preprocessImage(img);
           
-          // Pass the image for recognition
+          // Pass the image for recognition with enhanced confidence
           onImageSelected(img);
           
           setIsEnhancing(false);
@@ -115,7 +133,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, isProcessing
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-md">
                 <div className="text-white text-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white mx-auto mb-2"></div>
-                  <p>Enhancing image using Nutrition5k techniques...</p>
+                  <p>Enhancing image for better recognition...</p>
                 </div>
               </div>
             )}
