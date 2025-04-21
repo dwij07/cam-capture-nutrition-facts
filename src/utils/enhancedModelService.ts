@@ -67,11 +67,8 @@ export const loadModel = async (): Promise<mobilenet.MobileNet> => {
 };
 
 /**
- * Preprocesses the image to improve recognition accuracy
- * Based on techniques used in Nutrition5k dataset processing
- * 
- * @param imageElement The image element to preprocess
- * @returns The preprocessed tensor
+ * Preprocesses an image for the MobileNet model
+ * Resizes to 224x224 and normalizes pixel values
  */
 export const preprocessImage = async (imageElement: HTMLImageElement): Promise<tf.Tensor3D> => {
   try {
@@ -83,7 +80,8 @@ export const preprocessImage = async (imageElement: HTMLImageElement): Promise<t
       const normalized = imageTensor.toFloat().div(tf.scalar(127.5)).sub(tf.scalar(1));
       
       // Resize to 224x224 which is expected by MobileNet
-      return tf.image.resizeBilinear(normalized, [224, 224]);
+      // Adding explicit cast to ensure TypeScript recognizes this as Tensor3D
+      return tf.image.resizeBilinear(normalized, [224, 224]) as tf.Tensor3D;
     });
   } catch (error) {
     console.error('Failed to preprocess image:', error);
