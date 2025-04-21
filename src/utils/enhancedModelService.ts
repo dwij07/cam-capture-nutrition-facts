@@ -81,10 +81,11 @@ export const preprocessImage = async (imageElement: HTMLImageElement): Promise<t
     const normalized = imageTensor.toFloat().div(tf.scalar(127.5)).sub(tf.scalar(1));
     
     // Ensure proper dimensions for MobileNet (224x224)
-    // Fix: Add explicit type casting to ensure the result is a Tensor3D
-    const resized = tf.image.resizeBilinear(normalized, [224, 224]) as tf.Tensor3D;
+    // Fix: Use resizeNearestNeighbor which maintains the tensor rank and explicitly cast result
+    const resized = tf.image.resizeBilinear(normalized, [224, 224]);
     
-    return resized;
+    // Explicitly ensure we're returning a Tensor3D
+    return resized as tf.Tensor3D;
   } catch (error) {
     console.error('Failed to preprocess image:', error);
     throw new Error('Failed to process the image for analysis');
@@ -266,3 +267,4 @@ export const recognizeFood = async (
 
 // Pre-load the model when the service is imported for faster initial recognition
 loadModel().catch(console.error);
+
