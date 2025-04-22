@@ -113,18 +113,9 @@ const Dashboard: React.FC = () => {
             {user ? (
               <>
                 <p className="mb-4">You are logged in as: <strong>{user.email}</strong></p>
-                <div className="flex flex-col sm:flex-row gap-4 sm:justify-between">
-                  <Button onClick={() => navigate("/nutrition")} className="w-full sm:w-auto">
-                    Go to Nutrition Tracker
-                  </Button>
-                  <div className="flex gap-2 w-full sm:w-auto">
-                    <Button onClick={() => navigate("/")} variant="outline" className="w-full sm:w-auto">
-                      Go to Home Page
-                    </Button>
-                    <Button variant="outline" onClick={handleLogout} className="w-full sm:w-auto">
-                      Log Out
-                    </Button>
-                  </div>
+                <div className="flex justify-between">
+                  <Button onClick={() => navigate("/")}>Go to Main App</Button>
+                  <Button variant="outline" onClick={handleLogout}>Log Out</Button>
                 </div>
               </>
             ) : (
