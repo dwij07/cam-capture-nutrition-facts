@@ -114,7 +114,7 @@ const Dashboard: React.FC = () => {
               <>
                 <p className="mb-4">You are logged in as: <strong>{user.email}</strong></p>
                 <div className="flex justify-between">
-                  <Button onClick={() => navigate("/")}>Go to Main App</Button>
+                  <Button onClick={() => navigate("/")}>Go to Home Page</Button>
                   <Button variant="outline" onClick={handleLogout}>Log Out</Button>
                 </div>
               </>

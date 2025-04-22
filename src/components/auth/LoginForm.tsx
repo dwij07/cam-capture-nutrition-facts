@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
@@ -54,6 +53,7 @@ export const LoginForm = () => {
         description: "Welcome back to NutriTrack",
       });
       
+      // Navigate to dashboard
       navigate("/dashboard");
     } catch (error: any) {
       toast({
