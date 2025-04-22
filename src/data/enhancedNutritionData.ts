@@ -1,4 +1,3 @@
-
 import { nutritionData, FoodItem, NutritionInfo, findFoodByClass } from './nutritionData';
 
 // Enhanced nutrition data with more properties
@@ -437,7 +436,8 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
               calories: Math.round(tdee * 0.2),
               protein: Math.round(protein * 0.25),
               carbs: Math.round(carbs * 0.15),
-              fat: Math.round(fat * 0.1)
+              fat: Math.round(fat * 0.1),
+              isVegetarian: true
             }
           ],
           totalCalories: Math.round(tdee * 0.2)
@@ -451,7 +451,8 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
               calories: Math.round(tdee * 0.3),
               protein: Math.round(protein * 0.35),
               carbs: Math.round(carbs * 0.3),
-              fat: Math.round(fat * 0.25)
+              fat: Math.round(fat * 0.25),
+              isVegetarian: false
             }
           ],
           totalCalories: Math.round(tdee * 0.3)
@@ -465,7 +466,8 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
               calories: Math.round(tdee * 0.35),
               protein: Math.round(protein * 0.35),
               carbs: Math.round(carbs * 0.4),
-              fat: Math.round(fat * 0.5)
+              fat: Math.round(fat * 0.5),
+              isVegetarian: false
             }
           ],
           totalCalories: Math.round(tdee * 0.35)
@@ -479,7 +481,8 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
               calories: Math.round(tdee * 0.15),
               protein: Math.round(protein * 0.05),
               carbs: Math.round(carbs * 0.15),
-              fat: Math.round(fat * 0.15)
+              fat: Math.round(fat * 0.15),
+              isVegetarian: true
             }
           ],
           totalCalories: Math.round(tdee * 0.15)
@@ -496,7 +499,8 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
               calories: Math.round(tdee * 0.2),
               protein: Math.round(protein * 0.25),
               carbs: Math.round(carbs * 0.15),
-              fat: Math.round(fat * 0.2)
+              fat: Math.round(fat * 0.2),
+              isVegetarian: true
             }
           ],
           totalCalories: Math.round(tdee * 0.2)
@@ -510,7 +514,8 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
               calories: Math.round(tdee * 0.3),
               protein: Math.round(protein * 0.35),
               carbs: Math.round(carbs * 0.35),
-              fat: Math.round(fat * 0.2)
+              fat: Math.round(fat * 0.2),
+              isVegetarian: false
             }
           ],
           totalCalories: Math.round(tdee * 0.3)
@@ -524,7 +529,8 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
               calories: Math.round(tdee * 0.35),
               protein: Math.round(protein * 0.35),
               carbs: Math.round(carbs * 0.35),
-              fat: Math.round(fat * 0.4)
+              fat: Math.round(fat * 0.4),
+              isVegetarian: false
             }
           ],
           totalCalories: Math.round(tdee * 0.35)
@@ -538,7 +544,8 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
               calories: Math.round(tdee * 0.15),
               protein: Math.round(protein * 0.05),
               carbs: Math.round(carbs * 0.15),
-              fat: Math.round(fat * 0.2)
+              fat: Math.round(fat * 0.2),
+              isVegetarian: true
             }
           ],
           totalCalories: Math.round(tdee * 0.15)
@@ -555,7 +562,8 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
               calories: Math.round(tdee * 0.2),
               protein: Math.round(protein * 0.3),
               carbs: Math.round(carbs * 0.2),
-              fat: Math.round(fat * 0.1)
+              fat: Math.round(fat * 0.1),
+              isVegetarian: true
             }
           ],
           totalCalories: Math.round(tdee * 0.2)
@@ -569,7 +577,8 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
               calories: Math.round(tdee * 0.3),
               protein: Math.round(protein * 0.3),
               carbs: Math.round(carbs * 0.25),
-              fat: Math.round(fat * 0.3)
+              fat: Math.round(fat * 0.3),
+              isVegetarian: false
             }
           ],
           totalCalories: Math.round(tdee * 0.3)
@@ -583,7 +592,8 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
               calories: Math.round(tdee * 0.35),
               protein: Math.round(protein * 0.35),
               carbs: Math.round(carbs * 0.4),
-              fat: Math.round(fat * 0.4)
+              fat: Math.round(fat * 0.4),
+              isVegetarian: false
             }
           ],
           totalCalories: Math.round(tdee * 0.35)
@@ -597,7 +607,8 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
               calories: Math.round(tdee * 0.15),
               protein: Math.round(protein * 0.05),
               carbs: Math.round(carbs * 0.15),
-              fat: Math.round(fat * 0.2)
+              fat: Math.round(fat * 0.2),
+              isVegetarian: true
             }
           ],
           totalCalories: Math.round(tdee * 0.15)

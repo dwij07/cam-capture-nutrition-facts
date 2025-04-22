@@ -1,3 +1,4 @@
+
 import * as tf from '@tensorflow/tfjs';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import { EnhancedFoodItem } from '@/data/enhancedNutritionData';
@@ -79,7 +80,7 @@ export const preprocessImage = async (imageElement: HTMLImageElement): Promise<t
       // Normalize pixel values to [-1, 1]
       const normalized = imageTensor.toFloat().div(tf.scalar(127.5)).sub(tf.scalar(1));
       
-      // Resize to 224x224 which is expected by MobileNet and explicitly cast to Tensor3D
+      // Resize to 224x224 which is expected by MobileNet
       return tf.image.resizeBilinear(normalized, [224, 224]) as tf.Tensor3D;
     });
   } catch (error) {
