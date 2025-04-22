@@ -1,3 +1,4 @@
+
 import * as tf from '@tensorflow/tfjs';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import { EnhancedFoodItem } from '@/data/enhancedNutritionData';
@@ -79,8 +80,9 @@ export const preprocessImage = async (imageElement: HTMLImageElement): Promise<t
       // Normalize pixel values to [-1, 1]
       const normalized = imageTensor.toFloat().div(tf.scalar(127.5)).sub(tf.scalar(1));
       
-      // Resize to 224x224 and ensure it's a Tensor3D
-      return tf.image.resizeBilinear(normalized, [224, 224]) as tf.Tensor3D;
+      // Explicitly ensure we're working with a Tensor3D before resizing
+      // This fixes the type error by explicitly casting to Tensor3D
+      return tf.image.resizeBilinear(normalized as tf.Tensor3D, [224, 224]);
     });
   } catch (error) {
     console.error('Failed to preprocess image:', error);
