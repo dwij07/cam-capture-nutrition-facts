@@ -93,7 +93,7 @@ const Auth: React.FC = () => {
         description: "Welcome back to NutriTrack",
       });
       
-      navigate("/dashboard");
+      navigate("/");
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -143,7 +143,7 @@ const Auth: React.FC = () => {
         description: "Please check your email to confirm your account.",
       });
       
-      navigate("/dashboard");
+      navigate("/");
     } catch (error: any) {
       toast({
         variant: "destructive",
