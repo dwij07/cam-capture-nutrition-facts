@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Search, Plus, Check, Barcode } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -10,6 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import { nutritionData, FoodItem } from "@/data/nutritionData";
 import { MealEntry } from "@/components/MealLog";
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
 
 interface FoodSearchProps {
   onAddFood: (food: Omit<MealEntry, 'id'>) => void;
@@ -34,6 +34,8 @@ const FoodSearch: React.FC<FoodSearchProps> = ({ onAddFood }) => {
     fiber: "",
     sugar: ""
   });
+
+  const form = useForm();
 
   useEffect(() => {
     if (searchTerm.trim().length < 2) {
@@ -262,109 +264,146 @@ const FoodSearch: React.FC<FoodSearchProps> = ({ onAddFood }) => {
           </div>
         ) : isCustomEntry ? (
           <div className="space-y-6">
-            <div className="space-y-4">
-              <FormItem>
-                <FormLabel>Food Name</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter food name..."
-                    value={customFoodName}
-                    onChange={(e) => setCustomFoodName(e.target.value)}
+            <Form {...form}>
+              <div className="space-y-4">
+                <FormField
+                  name="foodName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Food Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter food name..."
+                          value={customFoodName}
+                          onChange={(e) => setCustomFoodName(e.target.value)}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    name="calories"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Calories</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="kcal"
+                            value={customNutrition.calories}
+                            onChange={(e) => handleCustomNutritionChange("calories", e.target.value)}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
                   />
-                </FormControl>
-              </FormItem>
 
-              <div className="grid grid-cols-2 gap-4">
-                <FormItem>
-                  <FormLabel>Calories</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="kcal"
-                      value={customNutrition.calories}
-                      onChange={(e) => handleCustomNutritionChange("calories", e.target.value)}
-                    />
-                  </FormControl>
-                </FormItem>
+                  <FormField
+                    name="protein"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Protein</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="g"
+                            value={customNutrition.protein}
+                            onChange={(e) => handleCustomNutritionChange("protein", e.target.value)}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
-                <FormItem>
-                  <FormLabel>Protein</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="g"
-                      value={customNutrition.protein}
-                      onChange={(e) => handleCustomNutritionChange("protein", e.target.value)}
-                    />
-                  </FormControl>
-                </FormItem>
+                  <FormField
+                    name="carbs"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Carbohydrates</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="g"
+                            value={customNutrition.carbs}
+                            onChange={(e) => handleCustomNutritionChange("carbs", e.target.value)}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
-                <FormItem>
-                  <FormLabel>Carbohydrates</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="g"
-                      value={customNutrition.carbs}
-                      onChange={(e) => handleCustomNutritionChange("carbs", e.target.value)}
-                    />
-                  </FormControl>
-                </FormItem>
+                  <FormField
+                    name="fat"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Fat</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="g"
+                            value={customNutrition.fat}
+                            onChange={(e) => handleCustomNutritionChange("fat", e.target.value)}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
-                <FormItem>
-                  <FormLabel>Fat</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="g"
-                      value={customNutrition.fat}
-                      onChange={(e) => handleCustomNutritionChange("fat", e.target.value)}
-                    />
-                  </FormControl>
-                </FormItem>
+                  <FormField
+                    name="fiber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Fiber</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="g"
+                            value={customNutrition.fiber}
+                            onChange={(e) => handleCustomNutritionChange("fiber", e.target.value)}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
-                <FormItem>
-                  <FormLabel>Fiber</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="g"
-                      value={customNutrition.fiber}
-                      onChange={(e) => handleCustomNutritionChange("fiber", e.target.value)}
-                    />
-                  </FormControl>
-                </FormItem>
+                  <FormField
+                    name="sugar"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Sugar</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="g"
+                            value={customNutrition.sugar}
+                            onChange={(e) => handleCustomNutritionChange("sugar", e.target.value)}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-                <FormItem>
-                  <FormLabel>Sugar</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="g"
-                      value={customNutrition.sugar}
-                      onChange={(e) => handleCustomNutritionChange("sugar", e.target.value)}
-                    />
-                  </FormControl>
-                </FormItem>
+                <Select value={mealType} onValueChange={(value: MealEntry['mealType']) => setMealType(value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select meal type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="breakfast">Breakfast</SelectItem>
+                    <SelectItem value="lunch">Lunch</SelectItem>
+                    <SelectItem value="dinner">Dinner</SelectItem>
+                    <SelectItem value="snack">Snack</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <Select value={mealType} onValueChange={(value: MealEntry['mealType']) => setMealType(value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select meal type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="breakfast">Breakfast</SelectItem>
-                  <SelectItem value="lunch">Lunch</SelectItem>
-                  <SelectItem value="dinner">Dinner</SelectItem>
-                  <SelectItem value="snack">Snack</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <Button onClick={handleAddCustomFood}>Add Food</Button>
-              <Button variant="outline" onClick={() => setIsCustomEntry(false)}>Cancel</Button>
-            </div>
+              <div className="flex items-center gap-4 mt-4">
+                <Button onClick={handleAddCustomFood}>Add Food</Button>
+                <Button variant="outline" onClick={() => setIsCustomEntry(false)}>Cancel</Button>
+              </div>
+            </Form>
           </div>
         ) : selectedFood ? (
           <div className="space-y-4">
