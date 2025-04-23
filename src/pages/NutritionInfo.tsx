@@ -1,8 +1,7 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Camera, ChartBar, LayoutDashboard, Utensils, LogOut } from "lucide-react";
+import { Camera, ChartBar, LayoutDashboard, Utensils, LogOut, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -77,7 +76,7 @@ const NutritionInfo = () => {
         </p>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
         <FeatureCard
           title="Camera Capture"
           icon={Camera}
@@ -101,6 +100,12 @@ const NutritionInfo = () => {
           icon={Utensils}
           description="Get customized diet recommendations based on your nutritional needs and preferences."
           to="/plan"
+        />
+        <FeatureCard
+          title="Achievements"
+          icon={Trophy}
+          description="Track your progress and earn achievements as you maintain healthy eating habits."
+          to="/achievements"
         />
       </div>
 

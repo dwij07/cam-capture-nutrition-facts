@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,7 +28,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-// Define schemas for form validation
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
@@ -55,7 +53,6 @@ const Auth: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Login form
   const loginForm = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -64,7 +61,6 @@ const Auth: React.FC = () => {
     },
   });
 
-  // Signup form
   const signupForm = useForm<SignupValues>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -75,7 +71,6 @@ const Auth: React.FC = () => {
     },
   });
 
-  // Handle login submission
   const onLoginSubmit = async (values: LoginValues) => {
     setIsLoading(true);
     try {
@@ -93,7 +88,7 @@ const Auth: React.FC = () => {
         description: "Welcome back to NutriTrack",
       });
       
-      navigate("/");
+      navigate("/info");
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -105,7 +100,6 @@ const Auth: React.FC = () => {
     }
   };
 
-  // Handle signup submission
   const onSignupSubmit = async (values: SignupValues) => {
     setIsLoading(true);
     try {
@@ -123,7 +117,6 @@ const Auth: React.FC = () => {
         throw error;
       }
 
-      // Store additional user profile information
       if (data.user) {
         const { error: profileError } = await supabase
           .from('profiles')
@@ -143,7 +136,7 @@ const Auth: React.FC = () => {
         description: "Please check your email to confirm your account.",
       });
       
-      navigate("/");
+      navigate("/info");
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -169,7 +162,6 @@ const Auth: React.FC = () => {
             <TabsTrigger value="signup">Sign up</TabsTrigger>
           </TabsList>
           
-          {/* Login Tab */}
           <TabsContent value="login">
             <CardContent className="pt-4">
               <Form {...loginForm}>
@@ -249,7 +241,6 @@ const Auth: React.FC = () => {
             </CardContent>
           </TabsContent>
           
-          {/* Signup Tab */}
           <TabsContent value="signup">
             <CardContent className="pt-4">
               <Form {...signupForm}>

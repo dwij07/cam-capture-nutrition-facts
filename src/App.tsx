@@ -12,6 +12,7 @@ import CameraPage from "./pages/CameraPage";
 import TrackerPage from "./pages/TrackerPage";
 import DashboardPage from "./pages/DashboardPage";
 import PlanPage from "./pages/PlanPage";
+import AchievementsPage from "./pages/AchievementsPage";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/tracker" element={<TrackerPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/plan" element={<PlanPage />} />
+          <Route path="/achievements" element={<AchievementsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
