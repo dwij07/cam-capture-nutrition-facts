@@ -2,9 +2,10 @@
 import React from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, Edit, Trash2 } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 export interface MealEntry {
   id: string;
@@ -42,11 +43,43 @@ const MealLog: React.FC<MealLogProps> = ({ meals, onAddMeal, onEditMeal, onDelet
     snack: 'Snack',
     dinner: 'Dinner'
   };
+  
+  // Calculate nutritional totals
+  const totalCalories = meals.reduce((sum, meal) => sum + meal.calories, 0);
+  const totalProtein = meals.reduce((sum, meal) => sum + meal.protein, 0);
+  const totalCarbs = meals.reduce((sum, meal) => sum + meal.carbs, 0);
+  const totalFat = meals.reduce((sum, meal) => sum + meal.fat, 0);
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Today's Meals</CardTitle>
+        <div>
+          <CardTitle>Today's Meals</CardTitle>
+          {meals.length > 0 && (
+            <div className="flex mt-1">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className="flex items-center gap-1.5"
+              >
+                <Badge variant="outline" className="bg-primary/10">
+                  <Flame className="h-3 w-3 mr-1 text-orange-500" />
+                  {totalCalories} kcal
+                </Badge>
+                <Badge variant="outline" className="bg-primary/10">
+                  P: {totalProtein.toFixed(1)}g
+                </Badge>
+                <Badge variant="outline" className="bg-primary/10">
+                  C: {totalCarbs.toFixed(1)}g
+                </Badge>
+                <Badge variant="outline" className="bg-primary/10">
+                  F: {totalFat.toFixed(1)}g
+                </Badge>
+              </motion.div>
+            </div>
+          )}
+        </div>
         <Button variant="outline" size="sm" onClick={() => onAddMeal && onAddMeal()}>
           <PlusCircle className="h-4 w-4 mr-2" />
           Add Meal

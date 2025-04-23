@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import ImageUpload from "@/components/ImageUpload";
@@ -33,6 +32,15 @@ import {
   updateMealInLog 
 } from "@/utils/storageService";
 import { toast } from "@/hooks/use-toast";
+import FoodSearch from "@/components/FoodSearch";
+import GamificationFeatures from "@/components/GamificationFeatures";
+import { 
+  getStreakDays, 
+  updateStreak, 
+  getAchievements, 
+  updateNutritionAchievements,
+  initializeAchievements
+} from "@/utils/gamificationService";
 
 const Index = () => {
   // State for food recognition
@@ -59,6 +67,10 @@ const Index = () => {
   } | null>(null);
   const [dietPlan, setDietPlan] = useState<DietPlanInfo | null>(null);
   
+  // Gamification state
+  const [streakDays, setStreakDays] = useState(0);
+  const [achievements, setAchievements] = useState(initializeAchievements());
+  
   // Load user data on component mount
   useEffect(() => {
     // Load user profile
@@ -69,12 +81,24 @@ const Index = () => {
     
     // Load meals for today
     refreshMeals();
+    
+    // Load gamification data
+    setStreakDays(getStreakDays());
+    setAchievements(getAchievements());
   }, []);
   
   // Refresh meals when selected date changes
   useEffect(() => {
     refreshMeals();
   }, [selectedDate]);
+  
+  // Update achievements when meals change
+  useEffect(() => {
+    if (profile && meals.length > 0) {
+      const updatedAchievements = updateNutritionAchievements(meals, profile.calorieGoal);
+      setAchievements(updatedAchievements);
+    }
+  }, [meals, profile]);
   
   const refreshMeals = () => {
     const todaysMeals = getMealLogForDate(selectedDate);
@@ -195,6 +219,15 @@ const Index = () => {
     });
   };
   
+  // Handle adding food from manual search
+  const handleAddFood = (food: Omit<MealEntry, 'id'>) => {
+    addMealToLog(food, selectedDate);
+    // Update streak when a meal is added
+    const currentStreak = updateStreak();
+    setStreakDays(currentStreak);
+    refreshMeals();
+  };
+  
   // Handle deleting a meal
   const handleDeleteMeal = (id: string) => {
     deleteMealFromLog(id, selectedDate);
@@ -215,7 +248,7 @@ const Index = () => {
       <Header />
       
       <Tabs defaultValue="camera" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-4 mb-8">
+        <TabsList className="grid grid-cols-5 mb-8">
           <TabsTrigger value="camera">
             <Camera className="h-4 w-4 mr-2" />
             Camera
@@ -228,6 +261,9 @@ const Index = () => {
           </TabsTrigger>
           <TabsTrigger value="plan">
             Diet Plan
+          </TabsTrigger>
+          <TabsTrigger value="achievements">
+            Achievements
           </TabsTrigger>
         </TabsList>
         
@@ -301,6 +337,8 @@ const Index = () => {
         </TabsContent>
         
         <TabsContent value="tracker" className="mt-0">
+          <FoodSearch onAddFood={handleAddFood} />
+          
           <MealLog 
             meals={meals} 
             onAddMeal={() => setActiveTab("camera")}
@@ -380,6 +418,19 @@ const Index = () => {
               </Button>
             </div>
           )}
+        </TabsContent>
+        
+        <TabsContent value="achievements" className="mt-0">
+          <GamificationFeatures
+            streakDays={streakDays}
+            achievements={achievements}
+          />
+          
+          <div className="flex justify-center mt-6">
+            <Button variant="outline" onClick={() => setActiveTab("tracker")}>
+              Log More Foods to Earn Achievements
+            </Button>
+          </div>
         </TabsContent>
       </Tabs>
       
