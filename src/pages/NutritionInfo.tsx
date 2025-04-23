@@ -82,25 +82,25 @@ const NutritionInfo = () => {
           title="Camera Capture"
           icon={Camera}
           description="Take photos of your meals to instantly analyze their nutritional content using advanced AI technology."
-          to="/"
+          to="/camera"
         />
         <FeatureCard
           title="Nutrition Tracking"
           icon={ChartBar}
           description="Keep detailed logs of your meals and track your nutritional intake over time with intuitive visualizations."
-          to="/?tab=tracker"
+          to="/tracker"
         />
         <FeatureCard
           title="Dashboard Analytics"
           icon={LayoutDashboard}
           description="View comprehensive analytics of your nutritional habits and progress towards your health goals."
-          to="/?tab=dashboard"
+          to="/dashboard"
         />
         <FeatureCard
           title="Personalized Diet Plan"
           icon={Utensils}
           description="Get customized diet recommendations based on your nutritional needs and preferences."
-          to="/?tab=plan"
+          to="/plan"
         />
       </div>
 

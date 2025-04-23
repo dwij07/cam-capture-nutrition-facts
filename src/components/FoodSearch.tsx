@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Search, Plus, Check, Barcode } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -8,8 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/hooks/use-toast";
 import { nutritionData, FoodItem } from "@/data/nutritionData";
 import { MealEntry } from "@/components/MealLog";
-import { v4 as uuidv4 } from "uuid";
-import { Badge } from "@/components/ui/badge";
+import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 
 interface FoodSearchProps {
   onAddFood: (food: Omit<MealEntry, 'id'>) => void;
@@ -26,8 +24,15 @@ const FoodSearch: React.FC<FoodSearchProps> = ({ onAddFood }) => {
   const [customFoodName, setCustomFoodName] = useState("");
   const [barcodeMode, setBarcodeMode] = useState(false);
   const [barcodeInput, setBarcodeInput] = useState("");
-  
-  // Search for foods when search term changes
+  const [customNutrition, setCustomNutrition] = useState({
+    calories: "",
+    protein: "",
+    carbs: "",
+    fat: "",
+    fiber: "",
+    sugar: ""
+  });
+
   useEffect(() => {
     if (searchTerm.trim().length < 2) {
       setSearchResults([]);
@@ -41,13 +46,11 @@ const FoodSearch: React.FC<FoodSearchProps> = ({ onAddFood }) => {
     setSearchResults(results);
   }, [searchTerm]);
   
-  // Handle selecting a food
   const handleSelectFood = (food: FoodItem) => {
     setSelectedFood(food);
     setIsCustomEntry(false);
   };
   
-  // Handle adding selected food to meal log
   const handleAddFood = () => {
     if (isCustomEntry) {
       if (!customFoodName.trim()) {
@@ -59,39 +62,46 @@ const FoodSearch: React.FC<FoodSearchProps> = ({ onAddFood }) => {
         return;
       }
       
-      const calories = parseInt(customCalories) || 0;
-      if (calories <= 0) {
+      const nutrition = {
+        calories: parseInt(customNutrition.calories) || 0,
+        protein: parseFloat(customNutrition.protein) || 0,
+        carbs: parseFloat(customNutrition.carbs) || 0,
+        fat: parseFloat(customNutrition.fat) || 0,
+      };
+
+      if (Object.values(nutrition).some(val => val <= 0)) {
         toast({
-          title: "Invalid calories",
-          description: "Please enter a valid calorie value",
+          title: "Invalid nutrition values",
+          description: "Please enter valid nutrition values",
           variant: "destructive"
         });
         return;
       }
-      
-      // Create custom food entry
+
       onAddFood({
         foodName: customFoodName,
         mealType,
         servingSize: "1 serving",
-        calories,
-        protein: 0, // Default values for custom entry
-        carbs: 0,
-        fat: 0,
+        ...nutrition,
         timestamp: new Date().toISOString()
       });
-      
-      // Reset form
+
       setCustomFoodName("");
-      setCustomCalories("");
+      setCustomNutrition({
+        calories: "",
+        protein: "",
+        carbs: "",
+        fat: "",
+        fiber: "",
+        sugar: ""
+      });
       setIsCustomEntry(false);
-      
+
       toast({
         title: "Food added successfully",
         description: `${customFoodName} added to your ${mealType} log`,
       });
     } else if (selectedFood) {
-      // Calculate nutrition based on serving size
       const multiplier = servingSize;
       const nutrition = {
         calories: Math.round(selectedFood.nutritionPer100g.calories * multiplier),
@@ -108,7 +118,6 @@ const FoodSearch: React.FC<FoodSearchProps> = ({ onAddFood }) => {
         timestamp: new Date().toISOString()
       });
       
-      // Reset form
       setSelectedFood(null);
       setServingSize(1);
       setSearchTerm("");
@@ -121,7 +130,6 @@ const FoodSearch: React.FC<FoodSearchProps> = ({ onAddFood }) => {
     }
   };
   
-  // Handle barcode scan (mock implementation)
   const handleBarcodeScan = () => {
     if (!barcodeInput) {
       toast({
@@ -132,16 +140,12 @@ const FoodSearch: React.FC<FoodSearchProps> = ({ onAddFood }) => {
       return;
     }
     
-    // This would normally connect to a barcode database API
-    // For demo purposes, we'll simulate finding a product
     toast({
       title: "Scanning barcode...",
       description: `Looking up product with barcode: ${barcodeInput}`,
     });
     
-    // Simulate API delay
     setTimeout(() => {
-      // Mock response - in a real app, this would come from an API
       if (barcodeInput === "123456789") {
         const mockFood: FoodItem = {
           name: "Scanned Protein Bar",
@@ -166,7 +170,65 @@ const FoodSearch: React.FC<FoodSearchProps> = ({ onAddFood }) => {
       }
     }, 1500);
   };
-  
+
+  const handleCustomNutritionChange = (field: string, value: string) => {
+    setCustomNutrition(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleAddCustomFood = () => {
+    if (!customFoodName.trim()) {
+      toast({
+        title: "Food name required",
+        description: "Please enter a name for your custom food",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const nutrition = {
+      calories: parseInt(customNutrition.calories) || 0,
+      protein: parseFloat(customNutrition.protein) || 0,
+      carbs: parseFloat(customNutrition.carbs) || 0,
+      fat: parseFloat(customNutrition.fat) || 0,
+    };
+
+    if (Object.values(nutrition).some(val => val <= 0)) {
+      toast({
+        title: "Invalid nutrition values",
+        description: "Please enter valid nutrition values",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    onAddFood({
+      foodName: customFoodName,
+      mealType,
+      servingSize: "1 serving",
+      ...nutrition,
+      timestamp: new Date().toISOString()
+    });
+
+    setCustomFoodName("");
+    setCustomNutrition({
+      calories: "",
+      protein: "",
+      carbs: "",
+      fat: "",
+      fiber: "",
+      sugar: ""
+    });
+    setIsCustomEntry(false);
+
+    toast({
+      title: "Food added successfully",
+      description: `${customFoodName} added to your ${mealType} log`,
+    });
+  };
+
   return (
     <Card className="mb-6">
       <CardHeader>
@@ -197,28 +259,108 @@ const FoodSearch: React.FC<FoodSearchProps> = ({ onAddFood }) => {
             <p className="text-xs text-muted-foreground">(Try "123456789" for a demo product)</p>
           </div>
         ) : isCustomEntry ? (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Food Name</label>
-              <Input 
-                placeholder="Enter food name..." 
-                value={customFoodName}
-                onChange={(e) => setCustomFoodName(e.target.value)}
-              />
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <FormItem>
+                <FormLabel>Food Name</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter food name..."
+                    value={customFoodName}
+                    onChange={(e) => setCustomFoodName(e.target.value)}
+                  />
+                </FormControl>
+              </FormItem>
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormItem>
+                  <FormLabel>Calories</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="kcal"
+                      value={customNutrition.calories}
+                      onChange={(e) => handleCustomNutritionChange("calories", e.target.value)}
+                    />
+                  </FormControl>
+                </FormItem>
+
+                <FormItem>
+                  <FormLabel>Protein</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="g"
+                      value={customNutrition.protein}
+                      onChange={(e) => handleCustomNutritionChange("protein", e.target.value)}
+                    />
+                  </FormControl>
+                </FormItem>
+
+                <FormItem>
+                  <FormLabel>Carbohydrates</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="g"
+                      value={customNutrition.carbs}
+                      onChange={(e) => handleCustomNutritionChange("carbs", e.target.value)}
+                    />
+                  </FormControl>
+                </FormItem>
+
+                <FormItem>
+                  <FormLabel>Fat</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="g"
+                      value={customNutrition.fat}
+                      onChange={(e) => handleCustomNutritionChange("fat", e.target.value)}
+                    />
+                  </FormControl>
+                </FormItem>
+
+                <FormItem>
+                  <FormLabel>Fiber</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="g"
+                      value={customNutrition.fiber}
+                      onChange={(e) => handleCustomNutritionChange("fiber", e.target.value)}
+                    />
+                  </FormControl>
+                </FormItem>
+
+                <FormItem>
+                  <FormLabel>Sugar</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="g"
+                      value={customNutrition.sugar}
+                      onChange={(e) => handleCustomNutritionChange("sugar", e.target.value)}
+                    />
+                  </FormControl>
+                </FormItem>
+              </div>
+
+              <Select value={mealType} onValueChange={(value: MealEntry['mealType']) => setMealType(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select meal type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="breakfast">Breakfast</SelectItem>
+                  <SelectItem value="lunch">Lunch</SelectItem>
+                  <SelectItem value="dinner">Dinner</SelectItem>
+                  <SelectItem value="snack">Snack</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Calories</label>
-              <Input 
-                type="number" 
-                placeholder="Enter calories..." 
-                value={customCalories}
-                onChange={(e) => setCustomCalories(e.target.value)}
-              />
-            </div>
-            
+
             <div className="flex items-center gap-4">
-              <Button onClick={handleAddFood}>Add Food</Button>
+              <Button onClick={handleAddCustomFood}>Add Food</Button>
               <Button variant="outline" onClick={() => setIsCustomEntry(false)}>Cancel</Button>
             </div>
           </div>
