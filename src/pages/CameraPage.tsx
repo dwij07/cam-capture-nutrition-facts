@@ -68,10 +68,11 @@ const CameraPage = () => {
     if (recognizedFood && recognizedFood.food) {
       const newMeal: Omit<MealEntry, 'id'> = {
         foodName: recognizedFood.food.name,
-        calories: recognizedFood.food.nutrition.calories,
-        protein: recognizedFood.food.nutrition.protein,
-        carbs: recognizedFood.food.nutrition.carbs,
-        fat: recognizedFood.food.nutrition.fat,
+        calories: recognizedFood.food.nutritionPer100g.calories,
+        protein: recognizedFood.food.nutritionPer100g.protein,
+        carbs: recognizedFood.food.nutritionPer100g.carbs,
+        fat: recognizedFood.food.nutritionPer100g.fat,
+        servingSize: recognizedFood.food.nutritionPer100g.serving,
         mealType: selectedMealType,
         timestamp: new Date().toISOString()
       };
@@ -158,7 +159,7 @@ const CameraPage = () => {
           <EnhancedNutritionDisplay 
             foodName={recognizedFood.food.name}
             confidence={recognizedFood.confidence}
-            nutrition={recognizedFood.food.nutrition}
+            nutrition={recognizedFood.food.nutritionPer100g}
             onAddToMealLog={handleAddToMealLog}
           />
         </div>
