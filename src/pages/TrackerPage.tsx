@@ -42,7 +42,7 @@ const TrackerPage = () => {
   };
 
   const handleDeleteMeal = (id: string) => {
-    deleteMealFromLog(id);
+    deleteMealFromLog(id, selectedDate);
     refreshMeals();
     toast({
       title: "Meal Deleted",
