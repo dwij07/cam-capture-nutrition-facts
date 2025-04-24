@@ -37,40 +37,41 @@ const TrackerPage = () => {
     
     toast({
       title: "Meal Added",
-      description: `${food.foodName} added to your meal log.`
+      description: `${food.foodName} added to your ${food.mealType}.`
     });
-  };
-
-  const handleDeleteMeal = (id: string) => {
-    deleteMealFromLog(id, selectedDate);
-    refreshMeals();
-    
-    toast({
-      title: "Meal Deleted",
-      description: "The meal has been removed from your log."
-    });
-  };
-
-  const goToCamera = () => {
-    navigate("/camera");
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl">
+    <div className="container mx-auto px-4 py-8 max-w-5xl bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 min-h-screen">
       <Header />
-      <FoodSearch onAddFood={handleAddFood} />
-      
-      <MealLog 
-        meals={meals} 
-        onDeleteMeal={handleDeleteMeal}
-        onAddMeal={goToCamera}
-      />
-      
-      <div className="flex justify-center mt-6">
-        <Button variant="outline" onClick={goToCamera}>
-          <Camera className="h-4 w-4 mr-2" />
-          Add Food with Camera
+      <div className="space-y-6">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate(-1)}
+          className="hover:bg-purple-100 dark:hover:bg-gray-700"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
         </Button>
+        
+        <FoodSearch onAddFood={handleAddFood} />
+        
+        <MealLog 
+          meals={meals} 
+          onDeleteMeal={handleDeleteMeal}
+          onAddMeal={goToCamera}
+        />
+        
+        <div className="flex justify-center mt-6">
+          <Button 
+            variant="outline" 
+            onClick={goToCamera}
+            className="bg-white hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-gray-700"
+          >
+            <Camera className="h-4 w-4 mr-2" />
+            Add Food with Camera
+          </Button>
+        </div>
       </div>
     </div>
   );

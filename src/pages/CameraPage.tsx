@@ -62,8 +62,17 @@ const CameraPage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl">
+    <div className="container mx-auto px-4 py-8 max-w-5xl bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 min-h-screen">
       <Header />
+      
+      <Button 
+        variant="ghost" 
+        onClick={() => navigate(-1)}
+        className="mb-6 hover:bg-purple-100 dark:hover:bg-gray-700"
+      >
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Back
+      </Button>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card>

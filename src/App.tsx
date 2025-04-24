@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -14,6 +13,7 @@ import TrackerPage from "./pages/TrackerPage";
 import DashboardPage from "./pages/DashboardPage";
 import PlanPage from "./pages/PlanPage";
 import AchievementsPage from "./pages/AchievementsPage";
+import AboutPage from "./pages/AboutPage";
 import { supabase } from "./integrations/supabase/client";
 
 const queryClient = new QueryClient();
@@ -64,6 +64,11 @@ const App = () => (
           <Route path="/info" element={
             <ProtectedRoute>
               <NutritionInfo />
+            </ProtectedRoute>
+          } />
+          <Route path="/about" element={
+            <ProtectedRoute>
+              <AboutPage />
             </ProtectedRoute>
           } />
           <Route path="/camera" element={

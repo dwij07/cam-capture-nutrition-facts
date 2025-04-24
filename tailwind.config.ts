@@ -1,4 +1,3 @@
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
@@ -58,6 +57,15 @@ module.exports = {
           carbs: "#0EA5E9",   // Blue
           fat: "#F97316",     // Orange
         },
+        // Add new gradient colors
+        'gradient-start': '#9b87f5',
+        'gradient-end': '#7E69AB',
+        'accent-purple': '#6E59A5',
+        'soft-green': '#F2FCE2',
+        'soft-yellow': '#FEF7CD',
+        'soft-orange': '#FEC6A1',
+        'soft-purple': '#E5DEFF',
+        'soft-pink': '#FFDEE2',
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -82,4 +90,3 @@ module.exports = {
   },
   plugins: [require("tailwindcss-animate")],
 }
-
