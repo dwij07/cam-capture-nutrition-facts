@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import FoodSearch from "@/components/FoodSearch";
 import MealLog from "@/components/MealLog";
 import { MealEntry } from "@/components/MealLog";
-import { Camera } from "lucide-react";
+import { Camera, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   addMealToLog, 
@@ -39,6 +39,19 @@ const TrackerPage = () => {
       title: "Meal Added",
       description: `${food.foodName} added to your ${food.mealType}.`
     });
+  };
+
+  const handleDeleteMeal = (id: string) => {
+    deleteMealFromLog(id);
+    refreshMeals();
+    toast({
+      title: "Meal Deleted",
+      description: "The meal has been removed from your log."
+    });
+  };
+
+  const goToCamera = () => {
+    navigate('/camera');
   };
 
   return (
