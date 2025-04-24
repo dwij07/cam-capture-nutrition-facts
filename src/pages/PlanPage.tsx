@@ -1,32 +1,73 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import DietPlan from "@/components/DietPlan";
-import { generateDietPlan } from "@/data/enhancedNutritionData";
+import { generateDietPlan, calculateTDEE } from "@/data/enhancedNutritionData";
 import ProfileForm from "@/components/ProfileForm";
 import { Card } from "@/components/ui/card";
+import { loadUserProfile, saveUserProfile } from "@/utils/storageService";
+import { toast } from "@/hooks/use-toast";
 
 const PlanPage = () => {
-  const [profile, setProfile] = React.useState(null);
-  const [dietPlan, setDietPlan] = React.useState(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [dietPlan, setDietPlan] = useState<any>(null);
+
+  useEffect(() => {
+    // Load user profile on component mount
+    const savedProfile = loadUserProfile();
+    if (savedProfile) {
+      setProfile(savedProfile);
+      
+      // Generate diet plan based on profile
+      const newDietPlan = generateDietPlan(savedProfile, savedProfile.calorieGoal);
+      setDietPlan(newDietPlan);
+    }
+  }, []);
 
   const handleSaveProfile = (profileData: any) => {
-    setProfile(profileData);
-    const newDietPlan = generateDietPlan(profileData, profileData.calorieGoal);
+    // Calculate TDEE based on profile data
+    const calorieGoal = calculateTDEE(profileData);
+    
+    const newProfile = {
+      ...profileData,
+      calorieGoal
+    };
+    
+    setProfile(newProfile);
+    saveUserProfile(newProfile);
+    
+    // Generate diet plan based on profile
+    const newDietPlan = generateDietPlan(profileData, calorieGoal);
     setDietPlan(newDietPlan);
+    
+    toast({
+      title: "Profile Saved",
+      description: `Your daily calorie goal is set to ${calorieGoal} calories.`
+    });
   };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       <Header />
       {dietPlan ? (
-        <DietPlan dietPlan={dietPlan} />
+        <>
+          <DietPlan dietPlan={dietPlan} />
+          <div className="mt-8 flex justify-center">
+            <Card className="w-full max-w-3xl p-6">
+              <h2 className="text-2xl font-semibold mb-6">Update Your Profile</h2>
+              <ProfileForm 
+                onSaveProfile={handleSaveProfile}
+                initialData={profile || {}}
+              />
+            </Card>
+          </div>
+        </>
       ) : (
         <Card className="p-6">
           <h2 className="text-2xl font-semibold mb-6">Set Up Your Diet Plan</h2>
           <ProfileForm 
             onSaveProfile={handleSaveProfile}
-            initialData={{}}
+            initialData={profile || {}}
           />
         </Card>
       )}

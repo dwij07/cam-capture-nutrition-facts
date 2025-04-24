@@ -1,12 +1,23 @@
-import React from "react";
-import { Link } from "react-router-dom";
+
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Camera, ChartBar, LayoutDashboard, Utensils, LogOut, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import EnhancedNutritionDisplay from "@/components/EnhancedNutritionDisplay";
+import { ExtendedPredictionResult } from "@/utils/enhancedModelService";
+import { EnhancedFoodItem, calculateNutritionForPortion, getDefaultPortion } from "@/data/enhancedNutritionData";
+import { addMealToLog } from "@/utils/storageService";
+import { MealEntry } from "@/components/MealLog";
+
+interface RecognizedFood {
+  food: EnhancedFoodItem;
+  confidence: number;
+  alternatives: ExtendedPredictionResult[];
+}
 
 const FeatureCard = ({ title, icon: Icon, description, to }: { 
   title: string; 
@@ -34,6 +45,15 @@ const FeatureCard = ({ title, icon: Icon, description, to }: {
 
 const NutritionInfo = () => {
   const navigate = useNavigate();
+  const [recognizedFood, setRecognizedFood] = useState<RecognizedFood | null>(null);
+
+  useEffect(() => {
+    // Get the recognized food from sessionStorage when the component mounts
+    const storedFood = sessionStorage.getItem('recognizedFood');
+    if (storedFood) {
+      setRecognizedFood(JSON.parse(storedFood));
+    }
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -52,6 +72,53 @@ const NutritionInfo = () => {
     }
   };
 
+  const handleAddToMealLog = () => {
+    if (!recognizedFood) return;
+    
+    const defaultPortion = getDefaultPortion(recognizedFood.food);
+    const nutrition = calculateNutritionForPortion(
+      recognizedFood.food, 
+      defaultPortion.grams
+    );
+    
+    const newMeal: Omit<MealEntry, 'id'> = {
+      foodName: recognizedFood.food.name,
+      mealType: (recognizedFood.food.mealType.includes('snack') ? 'snack' : 
+               (new Date().getHours() < 11 ? 'breakfast' : 
+                new Date().getHours() < 15 ? 'lunch' : 'dinner')) as MealEntry['mealType'],
+      servingSize: defaultPortion.name,
+      calories: nutrition.calories,
+      protein: nutrition.protein,
+      carbs: nutrition.carbs,
+      fat: nutrition.fat,
+      timestamp: new Date().toISOString()
+    };
+    
+    addMealToLog(newMeal, new Date());
+    
+    toast({
+      title: "Meal Added",
+      description: `${recognizedFood.food.name} added to your meal log.`
+    });
+    
+    // Navigate to tracker page
+    navigate("/tracker");
+  };
+
+  const handleSelectAlternative = (index: number) => {
+    if (!recognizedFood || !recognizedFood.alternatives[index].matchedFood) return;
+    
+    const alternative = recognizedFood.alternatives[index];
+    setRecognizedFood({
+      food: alternative.matchedFood!,
+      confidence: alternative.probability,
+      alternatives: [
+        ...recognizedFood.alternatives.slice(0, index),
+        ...recognizedFood.alternatives.slice(index + 1)
+      ]
+    });
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="flex justify-between items-center mb-8">
@@ -64,17 +131,46 @@ const NutritionInfo = () => {
         </Button>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mb-12"
-      >
-        <p className="text-xl text-muted-foreground text-center max-w-3xl mx-auto">
-          Discover the power of nutrition tracking with our comprehensive suite of tools.
-          Track your meals, analyze nutritional content, and make informed decisions about your diet.
-        </p>
-      </motion.div>
+      {recognizedFood ? (
+        <div className="mb-8">
+          <EnhancedNutritionDisplay 
+            foodName={recognizedFood.food.name}
+            confidence={recognizedFood.confidence}
+            nutrition={recognizedFood.food.nutritionPer100g}
+            onAddToMealLog={handleAddToMealLog}
+            alternativeOptions={recognizedFood.alternatives.map((alt, index) => ({
+              foodName: alt.matchedFood!.name,
+              confidence: alt.probability,
+              onSelect: () => handleSelectAlternative(index)
+            }))}
+          />
+          
+          <div className="flex justify-center mt-6">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate("/camera")}
+              className="mr-2"
+            >
+              Take Another Photo
+            </Button>
+            <Button onClick={handleAddToMealLog}>
+              Add to Meal Log
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-12"
+        >
+          <p className="text-xl text-muted-foreground text-center max-w-3xl mx-auto">
+            Discover the power of nutrition tracking with our comprehensive suite of tools.
+            Track your meals, analyze nutritional content, and make informed decisions about your diet.
+          </p>
+        </motion.div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
         <FeatureCard
