@@ -10,9 +10,9 @@ import { Button } from "@/components/ui/button";
 import { 
   addMealToLog, 
   getMealLogForDate, 
-  deleteMealFromLog,
-  updateStreak 
+  deleteMealFromLog
 } from "@/utils/storageService";
+import { updateStreak } from "@/utils/gamificationService";
 import { toast } from "@/hooks/use-toast";
 
 const TrackerPage = () => {
