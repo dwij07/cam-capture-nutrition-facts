@@ -2,8 +2,9 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Info, Utensils } from "lucide-react";
+import { ArrowLeft, Info, Utensils, Camera, BarChart, Award, Apple } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Header from "@/components/Header";
 
 const AboutPage = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8 max-w-5xl">
+        <Header />
         <div className="flex justify-between items-center mb-8">
           <Button 
             variant="ghost" 
@@ -44,7 +46,7 @@ const AboutPage = () => {
               </p>
               <div className="mt-4 aspect-video rounded-lg overflow-hidden">
                 <img 
-                  src="/photos/photo-1618160702438-9b02ab6515c9" 
+                  src="/photos/food-analysis.jpg" 
                   alt="Food analysis demonstration"
                   className="w-full h-full object-cover"
                 />
@@ -57,17 +59,31 @@ const AboutPage = () => {
               <h2 className="text-2xl font-semibold mb-4 text-blue-700 dark:text-blue-400">Key Features</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="p-4 bg-blue-50 rounded-lg dark:bg-gray-700">
-                  <Utensils className="h-6 w-6 text-blue-600 mb-2" />
+                  <Camera className="h-6 w-6 text-blue-600 mb-2" />
                   <h3 className="font-semibold mb-2">Food Recognition</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
                     Advanced AI technology to identify food from photos
                   </p>
                 </div>
                 <div className="p-4 bg-purple-50 rounded-lg dark:bg-gray-700">
-                  <Info className="h-6 w-6 text-purple-600 mb-2" />
+                  <Utensils className="h-6 w-6 text-purple-600 mb-2" />
                   <h3 className="font-semibold mb-2">Nutritional Analysis</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
                     Detailed breakdown of nutrients and calories
+                  </p>
+                </div>
+                <div className="p-4 bg-green-50 rounded-lg dark:bg-gray-700">
+                  <BarChart className="h-6 w-6 text-green-600 mb-2" />
+                  <h3 className="font-semibold mb-2">Progress Tracking</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Monitor your nutrition goals with easy-to-read charts
+                  </p>
+                </div>
+                <div className="p-4 bg-yellow-50 rounded-lg dark:bg-gray-700">
+                  <Award className="h-6 w-6 text-yellow-600 mb-2" />
+                  <h3 className="font-semibold mb-2">Achievements</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Earn rewards for maintaining healthy eating habits
                   </p>
                 </div>
               </div>
@@ -89,15 +105,32 @@ const AboutPage = () => {
                     <li>Carbohydrates for energy</li>
                     <li>Healthy fats for brain function</li>
                     <li>Vitamins and minerals for overall health</li>
+                    <li>Fiber for digestive health</li>
+                    <li>Water for hydration and metabolic functions</li>
                   </ul>
                 </div>
                 <div className="aspect-video rounded-lg overflow-hidden">
                   <img 
-                    src="/photos/photo-1721322800607-8c38375eef04" 
+                    src="/photos/healthy-foods.jpg" 
                     alt="Healthy lifestyle"
                     className="w-full h-full object-cover"
                   />
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-gradient-to-r from-purple-100 to-blue-100 dark:from-gray-800 dark:to-gray-700">
+            <CardContent className="pt-6">
+              <h2 className="text-2xl font-semibold mb-4 text-center">Take Control of Your Nutrition Today</h2>
+              <div className="flex justify-center mt-4">
+                <Button
+                  onClick={() => navigate("/camera")}
+                  className="bg-purple-600 hover:bg-purple-700 text-white"
+                >
+                  <Camera className="h-4 w-4 mr-2" />
+                  Analyze Your Food Now
+                </Button>
               </div>
             </CardContent>
           </Card>

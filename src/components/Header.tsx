@@ -30,15 +30,21 @@ const Header: React.FC = () => {
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <Camera className="h-8 w-8 mr-2 text-primary" />
-          <h1 className="text-3xl font-bold text-primary">Camera Nutrition Tracking</h1>
+          <Camera className="h-8 w-8 mr-2 text-purple-500" />
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">NutriSnap</h1>
         </div>
         <div className="flex items-center gap-4">
           <Link 
-            to="/info" 
+            to="/about" 
             className="text-muted-foreground hover:text-primary transition-colors"
           >
             About
+          </Link>
+          <Link 
+            to="/tracker" 
+            className="text-muted-foreground hover:text-primary transition-colors"
+          >
+            Meal Tracker
           </Link>
           <Button variant="outline" size="sm" onClick={handleLogout}>
             <LogOut className="h-4 w-4 mr-2" />

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import CameraCapture from "@/components/CameraCapture";
 import ImageUpload from "@/components/ImageUpload";
+import EnhancedNutritionDisplay from "@/components/EnhancedNutritionDisplay";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Loader2, ArrowLeft } from "lucide-react";
@@ -11,15 +12,24 @@ import { Button } from "@/components/ui/button";
 import { recognizeFood, ExtendedPredictionResult } from "@/utils/enhancedModelService";
 import { EnhancedFoodItem } from "@/data/enhancedNutritionData";
 import { toast } from "@/hooks/use-toast";
+import { MealEntry } from "@/components/MealLog";
+import { addMealToLog } from "@/utils/storageService";
 
 const CameraPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [recognizedFood, setRecognizedFood] = useState<{
+    food: EnhancedFoodItem;
+    confidence: number;
+  } | null>(null);
+  const [selectedMealType, setSelectedMealType] = useState<"breakfast" | "lunch" | "dinner" | "snack">("breakfast");
+  
   const navigate = useNavigate();
 
   const handleImageSelected = async (imageElement: HTMLImageElement) => {
     setIsProcessing(true);
     setError(null);
+    setRecognizedFood(null);
     
     try {
       // Classify the image using the enhanced model
@@ -30,19 +40,11 @@ const CameraPage = () => {
         const topMatch = predictions.find(p => p.matchedFood);
         
         if (topMatch?.matchedFood) {
-          // Get alternatives excluding the top match
-          const alternatives = predictions
-            .filter(p => p.matchedFood && p.matchedFood.name !== topMatch.matchedFood.name);
-          
-          // Store the recognized food in sessionStorage to access it on the info page
-          sessionStorage.setItem('recognizedFood', JSON.stringify({
+          // Set the recognized food directly on this page
+          setRecognizedFood({
             food: topMatch.matchedFood,
-            confidence: topMatch.probability,
-            alternatives
-          }));
-          
-          // Navigate to nutrition info page
-          navigate('/info');
+            confidence: topMatch.probability
+          });
           
           toast({
             title: "Food recognized",
@@ -59,6 +61,26 @@ const CameraPage = () => {
       setError("Failed to process the image. Please try again.");
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  const handleAddToMealLog = () => {
+    if (recognizedFood && recognizedFood.food) {
+      const newMeal: Omit<MealEntry, 'id'> = {
+        foodName: recognizedFood.food.name,
+        calories: recognizedFood.food.nutrition.calories,
+        protein: recognizedFood.food.nutrition.protein,
+        carbs: recognizedFood.food.nutrition.carbs,
+        fat: recognizedFood.food.nutrition.fat,
+        mealType: selectedMealType,
+        timestamp: new Date().toISOString()
+      };
+      
+      addMealToLog(newMeal, new Date());
+      toast({
+        title: "Added to meal log",
+        description: `${recognizedFood.food.name} added to your ${selectedMealType}`
+      });
     }
   };
 
@@ -111,6 +133,35 @@ const CameraPage = () => {
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
+      )}
+      
+      {recognizedFood && (
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold text-center mb-4 text-primary">Results</h2>
+          <div className="mb-4">
+            <Card className="p-4">
+              <h3 className="font-medium mb-2">Add to meal log as:</h3>
+              <div className="grid grid-cols-4 gap-2">
+                {["breakfast", "lunch", "dinner", "snack"].map((mealType) => (
+                  <Button 
+                    key={mealType}
+                    variant={selectedMealType === mealType ? "default" : "outline"}
+                    onClick={() => setSelectedMealType(mealType as "breakfast" | "lunch" | "dinner" | "snack")}
+                    className="capitalize"
+                  >
+                    {mealType}
+                  </Button>
+                ))}
+              </div>
+            </Card>
+          </div>
+          <EnhancedNutritionDisplay 
+            foodName={recognizedFood.food.name}
+            confidence={recognizedFood.confidence}
+            nutrition={recognizedFood.food.nutrition}
+            onAddToMealLog={handleAddToMealLog}
+          />
+        </div>
       )}
     </div>
   );
