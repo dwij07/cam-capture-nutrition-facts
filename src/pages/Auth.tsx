@@ -88,7 +88,7 @@ const Auth: React.FC = () => {
         description: "Welcome back to NutriTrack",
       });
       
-      navigate("/info");
+      navigate("/about");
     } catch (error: any) {
       toast({
         variant: "destructive",

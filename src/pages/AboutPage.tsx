@@ -2,7 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Info, Utensils, Camera, BarChart, Award } from "lucide-react";
+import { Utensils, Camera, BarChart, Award, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 
@@ -12,11 +12,29 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8 max-w-5xl">
-        <Header />
+        <div className="flex items-center mb-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/info")}
+            className="mr-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
+        </div>
 
-        <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold text-center mb-4 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
           Welcome to NutriTrack
         </h1>
+
+        <div className="flex justify-center mb-8">
+          <Button
+            onClick={() => navigate("/info")}
+            className="bg-purple-600 hover:bg-purple-700 text-white"
+          >
+            Get Started
+          </Button>
+        </div>
 
         <div className="grid gap-8">
           <Card className="bg-white/80 backdrop-blur-sm border-purple-100 dark:bg-gray-800/80 dark:border-gray-700">
@@ -41,13 +59,6 @@ const AboutPage = () => {
                     Advanced AI technology to identify food from photos
                   </p>
                 </div>
-                <div className="p-4 bg-purple-50 rounded-lg dark:bg-gray-700">
-                  <Utensils className="h-6 w-6 text-purple-600 mb-2" />
-                  <h3 className="font-semibold mb-2">Nutritional Analysis</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Detailed breakdown of nutrients and calories
-                  </p>
-                </div>
                 <div className="p-4 bg-green-50 rounded-lg dark:bg-gray-700">
                   <BarChart className="h-6 w-6 text-green-600 mb-2" />
                   <h3 className="font-semibold mb-2">Progress Tracking</h3>
@@ -62,42 +73,13 @@ const AboutPage = () => {
                     Earn rewards for maintaining healthy eating habits
                   </p>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/80 backdrop-blur-sm border-green-100 dark:bg-gray-800/80 dark:border-gray-700">
-            <CardContent className="pt-6">
-              <h2 className="text-2xl font-semibold mb-4 text-green-700 dark:text-green-400">
-                Importance of Nutrition
-              </h2>
-              <div>
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                  Understanding your nutrition is key to maintaining a healthy lifestyle. A balanced diet includes:
-                </p>
-                <ul className="list-disc pl-5 space-y-2 text-gray-700 dark:text-gray-300">
-                  <li>Proteins for muscle growth and repair</li>
-                  <li>Carbohydrates for energy</li>
-                  <li>Healthy fats for brain function</li>
-                  <li>Vitamins and minerals for overall health</li>
-                  <li>Fiber for digestive health</li>
-                  <li>Water for hydration and metabolic functions</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-gradient-to-r from-purple-100 to-blue-100 dark:from-gray-800 dark:to-gray-700">
-            <CardContent className="pt-6">
-              <h2 className="text-2xl font-semibold mb-4 text-center">Take Control of Your Nutrition Today</h2>
-              <div className="flex justify-center mt-4">
-                <Button
-                  onClick={() => navigate("/camera")}
-                  className="bg-purple-600 hover:bg-purple-700 text-white"
-                >
-                  <Camera className="h-4 w-4 mr-2" />
-                  Analyze Your Food Now
-                </Button>
+                <div className="p-4 bg-purple-50 rounded-lg dark:bg-gray-700">
+                  <Utensils className="h-6 w-6 text-purple-600 mb-2" />
+                  <h3 className="font-semibold mb-2">Nutritional Analysis</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Detailed breakdown of nutrients and calories
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>

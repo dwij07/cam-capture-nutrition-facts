@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Camera, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -39,12 +38,6 @@ const Header: React.FC = () => {
             className="text-muted-foreground hover:text-primary transition-colors"
           >
             About
-          </Link>
-          <Link 
-            to="/tracker" 
-            className="text-muted-foreground hover:text-primary transition-colors"
-          >
-            Meal Tracker
           </Link>
           <Button variant="outline" size="sm" onClick={handleLogout}>
             <LogOut className="h-4 w-4 mr-2" />
