@@ -2,7 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Info, Utensils, Camera, BarChart, Award, Apple } from "lucide-react";
+import { Info, Utensils, Camera, BarChart, Award } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 
@@ -13,26 +13,9 @@ const AboutPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8 max-w-5xl">
         <Header />
-        <div className="flex justify-between items-center mb-8">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate(-1)}
-            className="hover:bg-purple-100 dark:hover:bg-gray-700"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
-          <Button 
-            onClick={() => navigate("/info")}
-            className="bg-purple-600 hover:bg-purple-700 text-white"
-          >
-            <Info className="h-4 w-4 mr-2" />
-            Go to Food Analysis
-          </Button>
-        </div>
 
         <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-          Welcome to NutriSnap
+          Welcome to NutriTrack
         </h1>
 
         <div className="grid gap-8">
@@ -40,17 +23,10 @@ const AboutPage = () => {
             <CardContent className="pt-6">
               <h2 className="text-2xl font-semibold mb-4 text-purple-700 dark:text-purple-400">What We Do</h2>
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                NutriSnap is your intelligent food companion that helps you track and understand your nutrition intake. 
+                NutriTrack is your intelligent food companion that helps you track and understand your nutrition intake. 
                 Simply take a photo of your food, and our AI technology will analyze it, providing you with detailed 
                 nutritional information instantly.
               </p>
-              <div className="mt-4 aspect-video rounded-lg overflow-hidden">
-                <img 
-                  src="/photos/food-analysis.jpg" 
-                  alt="Food analysis demonstration"
-                  className="w-full h-full object-cover"
-                />
-              </div>
             </CardContent>
           </Card>
 
@@ -95,27 +71,18 @@ const AboutPage = () => {
               <h2 className="text-2xl font-semibold mb-4 text-green-700 dark:text-green-400">
                 Importance of Nutrition
               </h2>
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                    Understanding your nutrition is key to maintaining a healthy lifestyle. A balanced diet includes:
-                  </p>
-                  <ul className="list-disc pl-5 space-y-2 text-gray-700 dark:text-gray-300">
-                    <li>Proteins for muscle growth and repair</li>
-                    <li>Carbohydrates for energy</li>
-                    <li>Healthy fats for brain function</li>
-                    <li>Vitamins and minerals for overall health</li>
-                    <li>Fiber for digestive health</li>
-                    <li>Water for hydration and metabolic functions</li>
-                  </ul>
-                </div>
-                <div className="aspect-video rounded-lg overflow-hidden">
-                  <img 
-                    src="/photos/healthy-foods.jpg" 
-                    alt="Healthy lifestyle"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+              <div>
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                  Understanding your nutrition is key to maintaining a healthy lifestyle. A balanced diet includes:
+                </p>
+                <ul className="list-disc pl-5 space-y-2 text-gray-700 dark:text-gray-300">
+                  <li>Proteins for muscle growth and repair</li>
+                  <li>Carbohydrates for energy</li>
+                  <li>Healthy fats for brain function</li>
+                  <li>Vitamins and minerals for overall health</li>
+                  <li>Fiber for digestive health</li>
+                  <li>Water for hydration and metabolic functions</li>
+                </ul>
               </div>
             </CardContent>
           </Card>

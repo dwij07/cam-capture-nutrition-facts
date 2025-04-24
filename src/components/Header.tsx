@@ -31,7 +31,7 @@ const Header: React.FC = () => {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
           <Camera className="h-8 w-8 mr-2 text-purple-500" />
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">NutriSnap</h1>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">NutriTrack</h1>
         </div>
         <div className="flex items-center gap-4">
           <Link 
