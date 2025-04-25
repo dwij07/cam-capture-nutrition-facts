@@ -21,8 +21,11 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
     // This will hold our processed food items
     const generatedItems: Partial<EnhancedFoodItem>[] = [];
     
+    // Type for food item data structure in our arrays
+    type FoodItemData = [string, string[]];
+    
     // Fruits (150 items)
-    const fruits = [
+    const fruits: FoodItemData[] = [
       ["Apple", ["apple", "red apple", "green apple", "Granny Smith", "Fuji apple", "Honeycrisp"]],
       ["Orange", ["orange", "citrus", "mandarin", "clementine", "tangerine"]],
       ["Banana", ["banana", "yellow banana", "plantain"]],
@@ -30,7 +33,7 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
     ];
 
     // Vegetables (200 items)
-    const vegetables = [
+    const vegetables: FoodItemData[] = [
       ["Broccoli", ["broccoli", "broccoli florets", "cruciferous vegetable"]],
       ["Carrot", ["carrot", "baby carrot", "root vegetable"]],
       ["Spinach", ["spinach", "baby spinach", "leafy green"]],
@@ -38,7 +41,7 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
     ];
 
     // Prepared Foods (250 items)
-    const preparedFoods = [
+    const preparedFoods: FoodItemData[] = [
       ["Pizza", ["pizza", "pizza slice", "pepperoni pizza", "cheese pizza", "margherita"]],
       ["Burger", ["hamburger", "cheeseburger", "beef burger", "veggie burger"]],
       ["Pasta", ["pasta", "spaghetti", "penne", "fettuccine", "linguine"]],
@@ -46,7 +49,7 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
     ];
 
     // Dairy Products (100 items)
-    const dairyProducts = [
+    const dairyProducts: FoodItemData[] = [
       ["Cheese", ["cheddar cheese", "mozzarella", "swiss cheese", "gouda"]],
       ["Yogurt", ["yogurt", "greek yogurt", "plain yogurt", "flavored yogurt"]],
       ["Milk", ["milk", "whole milk", "skim milk", "2% milk"]],
@@ -54,7 +57,7 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
     ];
 
     // Grains (100 items)
-    const grains = [
+    const grains: FoodItemData[] = [
       ["Rice", ["white rice", "brown rice", "jasmine rice", "basmati rice"]],
       ["Bread", ["white bread", "whole wheat bread", "sourdough", "rye bread"]],
       ["Oats", ["oatmeal", "rolled oats", "steel cut oats"]],
@@ -62,7 +65,7 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
     ];
 
     // Proteins (100 items)
-    const proteins = [
+    const proteins: FoodItemData[] = [
       ["Chicken", ["chicken breast", "chicken thigh", "grilled chicken"]],
       ["Beef", ["steak", "ground beef", "beef roast", "beef tenderloin"]],
       ["Fish", ["salmon", "tuna", "cod", "tilapia", "halibut"]],
@@ -70,7 +73,7 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
     ];
 
     // Snacks (50 items)
-    const snacks = [
+    const snacks: FoodItemData[] = [
       ["Chips", ["potato chips", "tortilla chips", "corn chips"]],
       ["Cookies", ["chocolate chip cookies", "oatmeal cookies", "sugar cookies"]],
       ["Nuts", ["almonds", "peanuts", "cashews", "walnuts"]],
@@ -78,7 +81,7 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
     ];
 
     // Beverages (50 items)
-    const beverages = [
+    const beverages: FoodItemData[] = [
       ["Coffee", ["coffee", "espresso", "latte", "cappuccino"]],
       ["Tea", ["green tea", "black tea", "herbal tea", "chai"]],
       ["Juice", ["orange juice", "apple juice", "grape juice"]],
@@ -109,9 +112,6 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
         serving: '100g'
       };
     };
-
-    // Type for food item data structure in our arrays
-    type FoodItemData = [string, string[]];
     
     // Type for category data
     type CategoryData = {
