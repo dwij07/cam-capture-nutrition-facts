@@ -1,3 +1,4 @@
+
 import { EnhancedFoodItem } from './enhancedNutritionData';
 
 // Note: This is a partial representation of a large database.
@@ -117,11 +118,15 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
       { items: snacks, category: 'snacks', baseCalories: 150 },
       { items: beverages, category: 'beverages', baseCalories: 50 }
     ].forEach(({ items, category, baseCalories }) => {
-      items.forEach(([name, classes]) => {
+      // Fix: Properly type and iterate over the items array
+      items.forEach((item) => {
+        const foodName = item[0];
+        const foodClasses = item[1];
+        
         items.push({
-          name,
+          name: foodName,
           category,
-          classes,
+          classes: foodClasses,
           nutritionPer100g: generateNutritionData(category, baseCalories)
         });
       });
@@ -137,8 +142,8 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
     name: item.name!,
     category: item.category!,
     classes: item.classes!,
-    mealType: item.category === 'breakfast' ? ['breakfast'] :
-              item.category === 'snacks' ? ['snack'] :
+    // Fix: Correctly determine mealType based on category
+    mealType: item.category === 'snacks' ? ['snack'] : 
               ['breakfast', 'lunch', 'dinner', 'snack'],
     portionOptions: [
       { name: 'Small serving', grams: 50, default: false },
