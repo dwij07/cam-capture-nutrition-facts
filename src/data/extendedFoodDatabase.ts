@@ -11,6 +11,8 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
     'fruits', 'vegetables', 'grains', 'protein', 'dairy', 'snacks', 'beverages', 'prepared'
   ] as const;
   
+  type FoodCategory = typeof categories[number];
+  
   // Common meal types
   const mealTypes = ['breakfast', 'lunch', 'dinner', 'snack'] as const;
   
@@ -84,7 +86,7 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
     ];
 
     // Helper function to generate nutrition data
-    const generateNutritionData = (category: string, baseCalories: number): any => {
+    const generateNutritionData = (category: FoodCategory, baseCalories: number): any => {
       const variation = Math.random() * 0.4 - 0.2; // -20% to +20% variation
       const calories = Math.round(baseCalories * (1 + variation));
       
@@ -108,8 +110,18 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
       };
     };
 
+    // Type for food item data structure in our arrays
+    type FoodItemData = [string, string[]];
+    
+    // Type for category data
+    type CategoryData = {
+      items: FoodItemData[];
+      category: FoodCategory;
+      baseCalories: number;
+    };
+
     // Generate items for each category
-    [
+    const categoryData: CategoryData[] = [
       { items: fruits, category: 'fruits', baseCalories: 60 },
       { items: vegetables, category: 'vegetables', baseCalories: 40 },
       { items: preparedFoods, category: 'prepared', baseCalories: 250 },
@@ -118,9 +130,11 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
       { items: proteins, category: 'protein', baseCalories: 200 },
       { items: snacks, category: 'snacks', baseCalories: 150 },
       { items: beverages, category: 'beverages', baseCalories: 50 }
-    ].forEach(({ items, category, baseCalories }) => {
+    ];
+
+    categoryData.forEach(({ items, category, baseCalories }) => {
       // Process each item in the category
-      items.forEach((item: [string, string[]]) => {
+      items.forEach((item: FoodItemData) => {
         const foodName = item[0];
         const foodClasses = item[1];
         
