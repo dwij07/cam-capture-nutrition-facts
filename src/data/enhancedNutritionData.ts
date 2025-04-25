@@ -27,6 +27,39 @@ export interface EnhancedFoodItem extends Omit<FoodItem, 'nutritionPer100g'> {
   glycemicIndex?: number; // Optional glycemic index
 }
 
+// Add new interfaces for recipes
+interface Recipe {
+  steps: string[];
+  ingredients: string[];
+  prepTime: string;
+  cookTime: string;
+  servings: number;
+}
+
+interface MealWithRecipe {
+  name: string;
+  portion: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  isVegetarian: boolean;
+  recipe?: Recipe;
+}
+
+interface MealGroup {
+  name: string;
+  foods: MealWithRecipe[];
+  totalCalories: number;
+}
+
+interface DayPlan {
+  breakfast: MealGroup;
+  lunch: MealGroup;
+  dinner: MealGroup;
+  snacks: MealGroup;
+}
+
 // Convert the basic nutrition data to enhanced version
 // For now, we'll add some default values for the additional fields
 const enhancedData: EnhancedFoodItem[] = nutritionData.map(food => {
@@ -414,7 +447,168 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
   
   // Create a sample 3-day meal plan
   // This is a simplified version - in a real app, this would be much more sophisticated
-  const mealPlan = {
+  const createRecipe = (name: string, isVeg: boolean): Recipe => {
+    // This is a simplified example - in a real app, these would come from a database
+    return {
+      ingredients: [
+        isVeg ? "1 cup quinoa" : "4 oz chicken breast",
+        "1 tbsp olive oil",
+        "Mixed vegetables",
+        "Salt and pepper to taste"
+      ],
+      steps: [
+        "Gather all ingredients",
+        isVeg ? "Rinse quinoa thoroughly" : "Season the protein",
+        "Heat oil in a pan",
+        isVeg ? "Cook quinoa according to package instructions" : "Cook protein until done",
+        "Add vegetables and seasonings",
+        "Serve hot"
+      ],
+      prepTime: "10 minutes",
+      cookTime: "20 minutes",
+      servings: 1
+    };
+  };
+
+  // Example meal options
+  const breakfastOptions: MealWithRecipe[] = [
+    {
+      name: "Overnight Oats with Berries",
+      portion: "1 cup",
+      calories: Math.round(tdee * 0.2),
+      protein: Math.round(protein * 0.15),
+      carbs: Math.round(carbs * 0.25),
+      fat: Math.round(fat * 0.15),
+      isVegetarian: true,
+      recipe: createRecipe("Overnight Oats", true)
+    },
+    {
+      name: "Egg White Omelette with Spinach",
+      portion: "3 egg whites",
+      calories: Math.round(tdee * 0.2),
+      protein: Math.round(protein * 0.2),
+      carbs: Math.round(carbs * 0.1),
+      fat: Math.round(fat * 0.15),
+      isVegetarian: true,
+      recipe: createRecipe("Egg White Omelette", true)
+    },
+    {
+      name: "Turkey Bacon Breakfast Sandwich",
+      portion: "1 sandwich",
+      calories: Math.round(tdee * 0.25),
+      protein: Math.round(protein * 0.25),
+      carbs: Math.round(carbs * 0.2),
+      fat: Math.round(fat * 0.2),
+      isVegetarian: false,
+      recipe: createRecipe("Breakfast Sandwich", false)
+    }
+  ];
+
+  const lunchOptions: MealWithRecipe[] = [
+    {
+      name: "Quinoa Buddha Bowl",
+      portion: "1 bowl",
+      calories: Math.round(tdee * 0.3),
+      protein: Math.round(protein * 0.25),
+      carbs: Math.round(carbs * 0.3),
+      fat: Math.round(fat * 0.25),
+      isVegetarian: true,
+      recipe: createRecipe("Quinoa Bowl", true)
+    },
+    {
+      name: "Grilled Chicken Salad",
+      portion: "1 large bowl",
+      calories: Math.round(tdee * 0.3),
+      protein: Math.round(protein * 0.35),
+      carbs: Math.round(carbs * 0.2),
+      fat: Math.round(fat * 0.25),
+      isVegetarian: false,
+      recipe: createRecipe("Chicken Salad", false)
+    }
+  ];
+
+  const dinnerOptions: MealWithRecipe[] = [
+    {
+      name: "Lentil Curry with Brown Rice",
+      portion: "1 cup curry, 1/2 cup rice",
+      calories: Math.round(tdee * 0.35),
+      protein: Math.round(protein * 0.25),
+      carbs: Math.round(carbs * 0.35),
+      fat: Math.round(fat * 0.3),
+      isVegetarian: true,
+      recipe: createRecipe("Lentil Curry", true)
+    },
+    {
+      name: "Grilled Salmon with Vegetables",
+      portion: "6 oz salmon",
+      calories: Math.round(tdee * 0.35),
+      protein: Math.round(protein * 0.4),
+      carbs: Math.round(carbs * 0.25),
+      fat: Math.round(fat * 0.35),
+      isVegetarian: false,
+      recipe: createRecipe("Grilled Salmon", false)
+    }
+  ];
+
+  const snackOptions: MealWithRecipe[] = [
+    {
+      name: "Mixed Nuts and Dried Fruit",
+      portion: "1/4 cup",
+      calories: Math.round(tdee * 0.15),
+      protein: Math.round(protein * 0.1),
+      carbs: Math.round(carbs * 0.15),
+      fat: Math.round(fat * 0.2),
+      isVegetarian: true,
+      recipe: createRecipe("Trail Mix", true)
+    },
+    {
+      name: "Greek Yogurt with Honey",
+      portion: "1 cup",
+      calories: Math.round(tdee * 0.15),
+      protein: Math.round(protein * 0.15),
+      carbs: Math.round(carbs * 0.1),
+      fat: Math.round(fat * 0.1),
+      isVegetarian: true,
+      recipe: createRecipe("Greek Yogurt Bowl", true)
+    }
+  ];
+
+  // Generate 5 days of meals
+  const days: DayPlan[] = Array.from({ length: 5 }, (_, dayIndex) => {
+    const getRandomMeal = (options: MealWithRecipe[], usedMeals: Set<string>) => {
+      const availableOptions = options.filter(meal => !usedMeals.has(meal.name));
+      const selectedMeal = availableOptions[Math.floor(Math.random() * availableOptions.length)];
+      usedMeals.add(selectedMeal.name);
+      return selectedMeal;
+    };
+
+    const usedMeals = new Set<string>();
+    
+    return {
+      breakfast: {
+        name: "Breakfast",
+        foods: [getRandomMeal(breakfastOptions, usedMeals)],
+        totalCalories: Math.round(tdee * 0.2)
+      },
+      lunch: {
+        name: "Lunch",
+        foods: [getRandomMeal(lunchOptions, usedMeals)],
+        totalCalories: Math.round(tdee * 0.3)
+      },
+      dinner: {
+        name: "Dinner",
+        foods: [getRandomMeal(dinnerOptions, usedMeals)],
+        totalCalories: Math.round(tdee * 0.35)
+      },
+      snacks: {
+        name: "Snacks",
+        foods: [getRandomMeal(snackOptions, usedMeals)],
+        totalCalories: Math.round(tdee * 0.15)
+      }
+    };
+  });
+
+  return {
     id: "default-plan",
     name: planName,
     description: planDescription,
@@ -424,198 +618,6 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
       carbs,
       fat
     },
-    days: [
-      // Day 1
-      {
-        breakfast: {
-          name: "Protein-Packed Breakfast",
-          foods: [
-            {
-              name: "Greek Yogurt with Berries",
-              portion: "1 cup yogurt with 1/2 cup berries",
-              calories: Math.round(tdee * 0.2),
-              protein: Math.round(protein * 0.25),
-              carbs: Math.round(carbs * 0.15),
-              fat: Math.round(fat * 0.1),
-              isVegetarian: true
-            }
-          ],
-          totalCalories: Math.round(tdee * 0.2)
-        },
-        lunch: {
-          name: "Balanced Lunch",
-          foods: [
-            {
-              name: "Chicken Salad with Quinoa",
-              portion: "4oz chicken with 1/2 cup quinoa and veggies",
-              calories: Math.round(tdee * 0.3),
-              protein: Math.round(protein * 0.35),
-              carbs: Math.round(carbs * 0.3),
-              fat: Math.round(fat * 0.25),
-              isVegetarian: false
-            }
-          ],
-          totalCalories: Math.round(tdee * 0.3)
-        },
-        dinner: {
-          name: "Nutrient-Rich Dinner",
-          foods: [
-            {
-              name: "Salmon with Sweet Potato and Asparagus",
-              portion: "5oz salmon, 1 medium sweet potato, 1 cup asparagus",
-              calories: Math.round(tdee * 0.35),
-              protein: Math.round(protein * 0.35),
-              carbs: Math.round(carbs * 0.4),
-              fat: Math.round(fat * 0.5),
-              isVegetarian: false
-            }
-          ],
-          totalCalories: Math.round(tdee * 0.35)
-        },
-        snacks: {
-          name: "Healthy Snacks",
-          foods: [
-            {
-              name: "Almonds",
-              portion: "1oz (23 almonds)",
-              calories: Math.round(tdee * 0.15),
-              protein: Math.round(protein * 0.05),
-              carbs: Math.round(carbs * 0.15),
-              fat: Math.round(fat * 0.15),
-              isVegetarian: true
-            }
-          ],
-          totalCalories: Math.round(tdee * 0.15)
-        }
-      },
-      // Day 2
-      {
-        breakfast: {
-          name: "Protein-Packed Breakfast",
-          foods: [
-            {
-              name: "Egg Scramble with Avocado Toast",
-              portion: "3 eggs and 1 slice toast with 1/4 avocado",
-              calories: Math.round(tdee * 0.2),
-              protein: Math.round(protein * 0.25),
-              carbs: Math.round(carbs * 0.15),
-              fat: Math.round(fat * 0.2),
-              isVegetarian: true
-            }
-          ],
-          totalCalories: Math.round(tdee * 0.2)
-        },
-        lunch: {
-          name: "Balanced Lunch",
-          foods: [
-            {
-              name: "Turkey and Veggie Wrap",
-              portion: "4oz turkey with veggies in whole grain wrap",
-              calories: Math.round(tdee * 0.3),
-              protein: Math.round(protein * 0.35),
-              carbs: Math.round(carbs * 0.35),
-              fat: Math.round(fat * 0.2),
-              isVegetarian: false
-            }
-          ],
-          totalCalories: Math.round(tdee * 0.3)
-        },
-        dinner: {
-          name: "Nutrient-Rich Dinner",
-          foods: [
-            {
-              name: "Stir-Fry with Rice",
-              portion: "4oz lean beef with vegetables and 1/2 cup rice",
-              calories: Math.round(tdee * 0.35),
-              protein: Math.round(protein * 0.35),
-              carbs: Math.round(carbs * 0.35),
-              fat: Math.round(fat * 0.4),
-              isVegetarian: false
-            }
-          ],
-          totalCalories: Math.round(tdee * 0.35)
-        },
-        snacks: {
-          name: "Healthy Snacks",
-          foods: [
-            {
-              name: "Greek Yogurt with Honey",
-              portion: "1 cup yogurt with 1 tsp honey",
-              calories: Math.round(tdee * 0.15),
-              protein: Math.round(protein * 0.05),
-              carbs: Math.round(carbs * 0.15),
-              fat: Math.round(fat * 0.2),
-              isVegetarian: true
-            }
-          ],
-          totalCalories: Math.round(tdee * 0.15)
-        }
-      },
-      // Day 3
-      {
-        breakfast: {
-          name: "Protein-Packed Breakfast",
-          foods: [
-            {
-              name: "Protein Smoothie",
-              portion: "1 scoop protein powder, 1 banana, 1 cup milk",
-              calories: Math.round(tdee * 0.2),
-              protein: Math.round(protein * 0.3),
-              carbs: Math.round(carbs * 0.2),
-              fat: Math.round(fat * 0.1),
-              isVegetarian: true
-            }
-          ],
-          totalCalories: Math.round(tdee * 0.2)
-        },
-        lunch: {
-          name: "Balanced Lunch",
-          foods: [
-            {
-              name: "Quinoa Bowl with Chicken and Avocado",
-              portion: "4oz chicken, 1/2 cup quinoa, 1/4 avocado",
-              calories: Math.round(tdee * 0.3),
-              protein: Math.round(protein * 0.3),
-              carbs: Math.round(carbs * 0.25),
-              fat: Math.round(fat * 0.3),
-              isVegetarian: false
-            }
-          ],
-          totalCalories: Math.round(tdee * 0.3)
-        },
-        dinner: {
-          name: "Nutrient-Rich Dinner",
-          foods: [
-            {
-              name: "Grilled Fish Tacos",
-              portion: "5oz white fish with 2 corn tortillas and toppings",
-              calories: Math.round(tdee * 0.35),
-              protein: Math.round(protein * 0.35),
-              carbs: Math.round(carbs * 0.4),
-              fat: Math.round(fat * 0.4),
-              isVegetarian: false
-            }
-          ],
-          totalCalories: Math.round(tdee * 0.35)
-        },
-        snacks: {
-          name: "Healthy Snacks",
-          foods: [
-            {
-              name: "Apple with Peanut Butter",
-              portion: "1 medium apple with 1 tbsp peanut butter",
-              calories: Math.round(tdee * 0.15),
-              protein: Math.round(protein * 0.05),
-              carbs: Math.round(carbs * 0.15),
-              fat: Math.round(fat * 0.2),
-              isVegetarian: true
-            }
-          ],
-          totalCalories: Math.round(tdee * 0.15)
-        }
-      }
-    ]
+    days
   };
-  
-  return mealPlan;
 };
