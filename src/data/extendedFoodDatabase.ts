@@ -16,7 +16,8 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
   
   // Generate a list of 1000 food items
   const generateFoodItems = (): Partial<EnhancedFoodItem>[] => {
-    const items: Partial<EnhancedFoodItem>[] = [];
+    // This will hold our processed food items
+    const generatedItems: Partial<EnhancedFoodItem>[] = [];
     
     // Fruits (150 items)
     const fruits = [
@@ -118,12 +119,13 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
       { items: snacks, category: 'snacks', baseCalories: 150 },
       { items: beverages, category: 'beverages', baseCalories: 50 }
     ].forEach(({ items, category, baseCalories }) => {
-      // Fix: Properly type and iterate over the items array
-      items.forEach((item) => {
+      // Process each item in the category
+      items.forEach((item: [string, string[]]) => {
         const foodName = item[0];
         const foodClasses = item[1];
         
-        items.push({
+        // Add to our generated items array instead of modifying the items array
+        generatedItems.push({
           name: foodName,
           category,
           classes: foodClasses,
@@ -132,7 +134,7 @@ const generateExtendedFoodDatabase = (): EnhancedFoodItem[] => {
       });
     });
 
-    return items;
+    return generatedItems;
   };
 
   const baseItems = generateFoodItems();
