@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -56,11 +57,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/auth" element={<Auth />} />
-          <Route path="/" element={
-            <ProtectedRoute>
-              <NutritionInfo />
-            </ProtectedRoute>
-          } />
+          <Route path="/" element={<Navigate to="/auth" />} />
           <Route path="/info" element={
             <ProtectedRoute>
               <NutritionInfo />

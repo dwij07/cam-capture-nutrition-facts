@@ -7,10 +7,14 @@ import ProfileForm from "@/components/ProfileForm";
 import { Card } from "@/components/ui/card";
 import { loadUserProfile, saveUserProfile } from "@/utils/storageService";
 import { toast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 const PlanPage = () => {
   const [profile, setProfile] = useState<any>(null);
   const [dietPlan, setDietPlan] = useState<any>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Load user profile on component mount
@@ -48,6 +52,16 @@ const PlanPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
+      <div className="flex items-center mb-6">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate("/info")}
+          className="mr-4"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Home
+        </Button>
+      </div>
       <Header />
       {dietPlan ? (
         <>

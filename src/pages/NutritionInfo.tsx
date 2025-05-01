@@ -1,8 +1,7 @@
-
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Camera, ChartBar, LayoutDashboard, Utensils, LogOut, Trophy } from "lucide-react";
+import { Camera, ChartBar, LayoutDashboard, Utensils, LogOut, Trophy, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -125,10 +124,16 @@ const NutritionInfo = () => {
         <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
           NutriTrack Features
         </h1>
-        <Button variant="outline" onClick={handleLogout}>
-          <LogOut className="h-4 w-4 mr-2" />
-          Logout
-        </Button>
+        <div className="flex space-x-2">
+          <Button variant="outline" onClick={() => navigate("/about")}>
+            <Info className="h-4 w-4 mr-2" />
+            About
+          </Button>
+          <Button variant="outline" onClick={handleLogout}>
+            <LogOut className="h-4 w-4 mr-2" />
+            Logout
+          </Button>
+        </div>
       </div>
 
       {recognizedFood ? (

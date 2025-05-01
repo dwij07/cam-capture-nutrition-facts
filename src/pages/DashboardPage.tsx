@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Dashboard from "@/components/Dashboard";
 import { Button } from "@/components/ui/button";
-import { Info } from "lucide-react";
+import { Info, ArrowLeft } from "lucide-react";
 import { calculateDailyNutrition, calculateWeeklyNutrition, loadUserProfile } from "@/utils/storageService";
 
 const DashboardPage = () => {
@@ -23,6 +23,16 @@ const DashboardPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
+      <div className="flex items-center mb-6">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate("/info")}
+          className="mr-4"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Home
+        </Button>
+      </div>
       <Header />
       
       {profile ? (
