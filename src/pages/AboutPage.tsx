@@ -365,7 +365,8 @@ const AboutPage = () => {
       </div>
 
       {/* Add wave animation styles */}
-      <style jsx>{`
+      <style>
+        {`
         .wave-animation {
           position: absolute;
           top: 0;
@@ -393,9 +394,11 @@ const AboutPage = () => {
             background-position: 0% 50%;
           }
         }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };
 
 export default AboutPage;
+
