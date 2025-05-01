@@ -1,13 +1,11 @@
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
   Utensils, Camera, BarChart, Award, ArrowLeft, ArrowRight, 
-  Sparkles, CloudRain, Users, LeafIcon, ListCheck, Compass
+  Sparkles, CloudRain, Users, LeafIcon, ListCheck, Compass, LogOut
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -17,35 +15,35 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
-// Stats for animated counters
-const stats = [
-  { value: 10000, label: "Active Users" },
-  { value: 500000, label: "Meals Tracked" },
-  { value: 250000, label: "Goals Achieved" }
-];
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
+import InnovativeFeatureCard from "@/components/InnovativeFeatureCard";
 
 // Coming soon features
 const comingSoonFeatures = [
   {
     title: "AI Meal Recommendations",
     description: "Get personalized meal suggestions based on your past eating habits and preferences.",
-    icon: <Sparkles className="h-12 w-12 text-purple-500" />
+    icon: <Sparkles className="h-12 w-12 text-purple-500" />,
+    badges: ["AI-Powered", "Personalized"]
   },
   {
     title: "Food Waste Tracker",
     description: "Track and reduce your food waste with smart reminders and tips.",
-    icon: <CloudRain className="h-12 w-12 text-green-500" />
+    icon: <CloudRain className="h-12 w-12 text-green-500" />,
+    badges: ["Eco-Friendly", "Sustainability"]
   },
   {
     title: "Community Challenges",
     description: "Join weekly and monthly health challenges with the NutriTrack community.",
-    icon: <Users className="h-12 w-12 text-blue-500" />
+    icon: <Users className="h-12 w-12 text-blue-500" />,
+    badges: ["Social", "Motivational"]
   },
   {
     title: "Nutrition Habit Streaks",
     description: "Build healthy habits with streak tracking and achievement rewards.",
-    icon: <ListCheck className="h-12 w-12 text-orange-500" />
+    icon: <ListCheck className="h-12 w-12 text-orange-500" />,
+    badges: ["Gamification", "Consistency"]
   }
 ];
 
@@ -53,7 +51,7 @@ const comingSoonFeatures = [
 const faqs = [
   {
     question: "How accurate is the food recognition?",
-    answer: "Our AI model is trained on millions of food images and can recognize thousands of different foods with over 90% accuracy. For best results, take clear photos in good lighting."
+    answer: "Our AI model can recognize thousands of different foods with over 90% accuracy based on our data. For best results, take clear photos in good lighting."
   },
   {
     question: "Can I track meals without taking photos?",
@@ -76,31 +74,29 @@ const faqs = [
 const AboutPage = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const [counts, setCounts] = useState(stats.map(() => 0));
 
-  // Animation for counters
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCounts(prevCounts => 
-        prevCounts.map((count, i) => {
-          const target = stats[i].value;
-          const increment = Math.ceil(target / 30);
-          if (count < target) {
-            return Math.min(count + increment, target);
-          }
-          return count;
-        })
-      );
-    }, 50);
-
-    return () => clearInterval(interval);
-  }, []);
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "Logged out successfully",
+        description: "See you soon!",
+      });
+      navigate("/auth");
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to log out. Please try again.",
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
-      {/* Back button */}
+      {/* Back button and logout */}
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="flex items-center mb-6">
+        <div className="flex items-center justify-between mb-6">
           <Button 
             variant="ghost" 
             onClick={() => navigate("/info")}
@@ -108,6 +104,11 @@ const AboutPage = () => {
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
+          </Button>
+          
+          <Button variant="outline" onClick={handleLogout}>
+            <LogOut className="h-4 w-4 mr-2" />
+            Logout
           </Button>
         </div>
 
@@ -130,10 +131,18 @@ const AboutPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed"
+                className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6"
               >
                 Your intelligent companion for healthier eating habits and nutritional awareness.
               </motion.p>
+              <Button 
+                onClick={() => navigate("/info")}
+                size="lg" 
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-lg px-8 py-6 h-auto shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                Get Started Now
+                <ArrowRight className="ml-2" />
+              </Button>
             </div>
             
             <motion.div
@@ -149,24 +158,6 @@ const AboutPage = () => {
               />
             </motion.div>
           </div>
-        </div>
-
-        {/* Animated stats section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          {stats.map((stat, index) => (
-            <motion.div 
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + index * 0.1 }}
-              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300"
-            >
-              <div className="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">
-                {counts[index].toLocaleString()}+
-              </div>
-              <div className="text-gray-600 dark:text-gray-300">{stat.label}</div>
-            </motion.div>
-          ))}
         </div>
 
         {/* What We Do section */}
@@ -232,7 +223,7 @@ const AboutPage = () => {
                 </div>
               </motion.div>
               
-              {/* Step 2 */}
+              {/* Steps 2-4 */}
               <motion.div 
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -264,7 +255,6 @@ const AboutPage = () => {
                 </div>
               </motion.div>
               
-              {/* Step 3 */}
               <motion.div 
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -296,7 +286,6 @@ const AboutPage = () => {
                 </div>
               </motion.div>
               
-              {/* Step 4 */}
               <motion.div 
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -345,24 +334,14 @@ const AboutPage = () => {
           
           <div className="grid md:grid-cols-2 gap-6">
             {comingSoonFeatures.map((feature, index) => (
-              <motion.div
+              <InnovativeFeatureCard
                 key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-gradient-to-br from-white to-purple-50 dark:from-gray-800 dark:to-gray-700 p-1 rounded-xl"
-              >
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 h-full flex flex-col">
-                  <div className="flex items-center mb-4">
-                    <div className="mr-4 flex-shrink-0">
-                      {feature.icon}
-                    </div>
-                    <h3 className="text-xl font-semibold">{feature.title}</h3>
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
-                </div>
-              </motion.div>
+                title={feature.title}
+                description={feature.description}
+                icon={feature.icon}
+                badges={feature.badges}
+                comingSoon={true}
+              />
             ))}
           </div>
         </motion.div>

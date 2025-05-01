@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -15,6 +14,7 @@ import DashboardPage from "./pages/DashboardPage";
 import PlanPage from "./pages/PlanPage";
 import AchievementsPage from "./pages/AchievementsPage";
 import AboutPage from "./pages/AboutPage";
+import SeasonalFoodsPage from "./pages/SeasonalFoodsPage";
 import { supabase } from "./integrations/supabase/client";
 
 const queryClient = new QueryClient();
@@ -93,6 +93,7 @@ const App = () => (
               <AchievementsPage />
             </ProtectedRoute>
           } />
+          <Route path="/seasonal-foods" element={<SeasonalFoodsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
