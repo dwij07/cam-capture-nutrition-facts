@@ -2,40 +2,75 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Utensils, Camera, BarChart, Award, ArrowLeft, ArrowRight } from "lucide-react";
+import { 
+  Utensils, Camera, BarChart, Award, ArrowLeft, ArrowRight, 
+  Sparkles, CloudRain, Users, LeafIcon, ListCheck, Compass
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
-
-// Testimonials data
-const testimonials = [
-  {
-    name: "Sarah J.",
-    image: "/placeholder.svg",
-    role: "Fitness Enthusiast",
-    content: "NutriTrack changed how I approach my meals. The AI analysis makes tracking so simple!"
-  },
-  {
-    name: "Michael T.",
-    image: "/placeholder.svg",
-    role: "Busy Professional",
-    content: "I've lost 15 pounds in 3 months just by being more aware of what I eat. This app made it possible."
-  },
-  {
-    name: "Priya K.",
-    image: "/placeholder.svg",
-    role: "Nutrition Coach",
-    content: "I recommend NutriTrack to all my clients. The detailed breakdowns and progress tracking are unmatched."
-  }
-];
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 // Stats for animated counters
 const stats = [
   { value: 10000, label: "Active Users" },
   { value: 500000, label: "Meals Tracked" },
   { value: 250000, label: "Goals Achieved" }
+];
+
+// Coming soon features
+const comingSoonFeatures = [
+  {
+    title: "AI Meal Recommendations",
+    description: "Get personalized meal suggestions based on your past eating habits and preferences.",
+    icon: <Sparkles className="h-12 w-12 text-purple-500" />
+  },
+  {
+    title: "Food Waste Tracker",
+    description: "Track and reduce your food waste with smart reminders and tips.",
+    icon: <CloudRain className="h-12 w-12 text-green-500" />
+  },
+  {
+    title: "Community Challenges",
+    description: "Join weekly and monthly health challenges with the NutriTrack community.",
+    icon: <Users className="h-12 w-12 text-blue-500" />
+  },
+  {
+    title: "Nutrition Habit Streaks",
+    description: "Build healthy habits with streak tracking and achievement rewards.",
+    icon: <ListCheck className="h-12 w-12 text-orange-500" />
+  }
+];
+
+// FAQs
+const faqs = [
+  {
+    question: "How accurate is the food recognition?",
+    answer: "Our AI model is trained on millions of food images and can recognize thousands of different foods with over 90% accuracy. For best results, take clear photos in good lighting."
+  },
+  {
+    question: "Can I track meals without taking photos?",
+    answer: "Yes! While our photo recognition is a key feature, you can also manually log your meals using our extensive food database search."
+  },
+  {
+    question: "Is my data private?",
+    answer: "Absolutely. Your nutrition data and photos are stored securely and never shared with third parties. You have full control over your privacy settings."
+  },
+  {
+    question: "Can I set custom nutrition goals?",
+    answer: "Yes, NutriTrack lets you set personalized goals based on your dietary preferences, allergies, and health objectives."
+  },
+  {
+    question: "Is there a premium version?",
+    answer: "We offer both free and premium tiers. The premium subscription includes advanced analytics, unlimited meal history, and priority access to new features."
+  }
 ];
 
 const AboutPage = () => {
@@ -296,7 +331,7 @@ const AboutPage = () => {
           </div>
         </div>
 
-        {/* Testimonials section */}
+        {/* Coming Soon Features */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -305,13 +340,13 @@ const AboutPage = () => {
           className="mb-16"
         >
           <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-center text-purple-600 dark:text-purple-400">
-            What Our Users Say
+            Coming Soon
           </h2>
           
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial, index) => (
+          <div className="grid md:grid-cols-2 gap-6">
+            {comingSoonFeatures.map((feature, index) => (
               <motion.div
-                key={testimonial.name}
+                key={feature.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -320,20 +355,46 @@ const AboutPage = () => {
               >
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-6 h-full flex flex-col">
                   <div className="flex items-center mb-4">
-                    <Avatar className="h-10 w-10 mr-4">
-                      <AvatarImage src={testimonial.image} alt={testimonial.name} />
-                      <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <h3 className="font-semibold">{testimonial.name}</h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
+                    <div className="mr-4 flex-shrink-0">
+                      {feature.icon}
                     </div>
+                    <h3 className="text-xl font-semibold">{feature.title}</h3>
                   </div>
-                  <p className="text-gray-600 dark:text-gray-300 italic flex-grow">"{testimonial.content}"</p>
+                  <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
                 </div>
               </motion.div>
             ))}
           </div>
+        </motion.div>
+
+        {/* FAQ Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-16"
+        >
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-center text-blue-600 dark:text-blue-400">
+            Frequently Asked Questions
+          </h2>
+          
+          <Card className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
+            <CardContent className="pt-6">
+              <Accordion type="single" collapsible className="w-full">
+                {faqs.map((faq, index) => (
+                  <AccordionItem key={index} value={`item-${index}`}>
+                    <AccordionTrigger className="text-lg font-medium text-gray-800 dark:text-gray-200">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-gray-600 dark:text-gray-300">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </CardContent>
+          </Card>
         </motion.div>
 
         {/* CTA Section */}
@@ -401,4 +462,3 @@ const AboutPage = () => {
 };
 
 export default AboutPage;
-
