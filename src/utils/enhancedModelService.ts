@@ -1,300 +1,139 @@
 
 import * as tf from '@tensorflow/tfjs';
 import * as mobilenet from '@tensorflow-models/mobilenet';
-import { EnhancedFoodItem } from '@/data/enhancedNutritionData';
-import { indianFoods, chineseFoods, americanFoods } from '@/data/cuisineData';
-import { combinedFoodDatabase } from '@/data/extendedFoodDatabase';
+import { enhancedFoodDatabase } from '@/data/enhancedNutritionData';
 
-// Define the prediction result interface
-export interface PredictionResult {
+/**
+ * Enhanced service for food recognition with detailed nutrition data
+ */
+
+// Define the prediction result interface with matched food
+export interface ExtendedPredictionResult {
   className: string;
   probability: number;
+  matchedFood?: any; // Will contain the matched food item from our database
 }
-
-export interface ExtendedPredictionResult extends PredictionResult {
-  matchedFood?: EnhancedFoodItem;
-}
-
-// Combine all food data from multiple sources for comprehensive coverage
-const allFoods: EnhancedFoodItem[] = [
-  ...indianFoods,
-  ...chineseFoods,
-  ...americanFoods,
-  ...combinedFoodDatabase
-];
-
-// Food classification categories inspired by Nutrition5k dataset structure
-const foodCategories = {
-  grains: ["bread", "rice", "pasta", "cereal", "naan", "tortilla"],
-  proteins: ["chicken", "beef", "fish", "tofu", "eggs", "lamb", "shrimp"],
-  vegetables: ["salad", "broccoli", "spinach", "kale", "carrot"],
-  fruits: ["apple", "banana", "orange", "grapes", "berries"],
-  dairy: ["cheese", "milk", "yogurt", "cream"],
-  sweets: ["cake", "ice cream", "cookie", "chocolate", "dessert"],
-  prepared: ["pizza", "burger", "sandwich", "curry", "soup", "stew"]
-};
 
 // Singleton instance of the model
 let modelInstance: mobilenet.MobileNet | null = null;
 
 /**
  * Loads the MobileNet model if it hasn't been loaded already
- * We use MobileNet v2 with higher alpha for better feature extraction
- * 
- * @returns Promise that resolves to the loaded model
  */
-export const loadModel = async (): Promise<mobilenet.MobileNet> => {
+export const loadEnhancedModel = async (): Promise<mobilenet.MobileNet> => {
   try {
+    // If model is already loaded, return it
     if (modelInstance) {
       return modelInstance;
     }
+
+    // Show loading status
+    console.log('Loading enhanced food recognition model...');
     
-    console.log('Loading enhanced MobileNet v2 model...');
-    
+    // Wait for TensorFlow.js to be ready
     await tf.ready();
     
-    // Load MobileNet v2 with the highest alpha for better accuracy
+    // Load the model
     modelInstance = await mobilenet.load({
-      version: 2,
+      version: 1,
       alpha: 1.0
     });
     
     console.log('Enhanced model loaded successfully');
     return modelInstance;
   } catch (error) {
-    console.error('Failed to load model:', error);
-    throw new Error('Failed to load image recognition model');
+    console.error('Failed to load enhanced model:', error);
+    throw new Error('Failed to load enhanced food recognition model');
   }
 };
 
 /**
- * Preprocesses an image for the MobileNet model
- * Resizes to 224x224 and normalizes pixel values
- */
-export const preprocessImage = async (imageElement: HTMLImageElement): Promise<tf.Tensor3D> => {
-  try {
-    return tf.tidy(() => {
-      // Convert to tensor
-      const imageTensor = tf.browser.fromPixels(imageElement);
-      
-      // Normalize pixel values to [-1, 1]
-      const normalized = imageTensor.toFloat().div(tf.scalar(127.5)).sub(tf.scalar(1));
-      
-      // Explicitly ensure we're working with a Tensor3D before resizing
-      // This fixes the type error by explicitly casting to Tensor3D
-      return tf.image.resizeBilinear(normalized as tf.Tensor3D, [224, 224]);
-    });
-  } catch (error) {
-    console.error('Failed to preprocess image:', error);
-    throw new Error('Failed to process the image for analysis');
-  }
-};
-
-/**
- * Classifies an image and returns the top K predictions
- * Uses image preprocessing techniques inspired by Nutrition5k
- * 
- * @param imageElement HTML image element containing the image to classify
- * @param topK Number of top predictions to return (default: 5)
- * @returns Promise that resolves to array of top K prediction results
- */
-export const classifyImage = async (
-  imageElement: HTMLImageElement,
-  topK = 5
-): Promise<PredictionResult[]> => {
-  try {
-    const model = await loadModel();
-    console.log('Classifying image with enhanced techniques...');
-    
-    // Get multiple predictions to improve matching
-    // Increase to 5x requested to get more options for matching
-    const predictions = await model.classify(imageElement, topK * 5);
-    
-    // Enhanced logging for debugging
-    console.log('Raw predictions:', predictions);
-    
-    // Improve confidence scores to ensure better match rates
-    const enhancedPredictions = predictions.map(pred => ({
-      ...pred,
-      probability: Math.min(pred.probability * 1.2, 1.0) // Boost confidence but cap at 1.0
-    }));
-    
-    return enhancedPredictions;
-  } catch (error) {
-    console.error('Failed to classify image:', error);
-    throw new Error('Failed to analyze the image');
-  }
-};
-
-/**
- * Identifies food category for semantic matching
- * Inspired by Nutrition5k dataset categorization
- * 
- * @param className The class name to categorize
- * @returns The food category if identified
- */
-const identifyFoodCategory = (className: string): string | null => {
-  const normalizedClass = className.toLowerCase();
-  
-  for (const [category, keywords] of Object.entries(foodCategories)) {
-    if (keywords.some(keyword => normalizedClass.includes(keyword))) {
-      return category;
-    }
-  }
-  
-  return null;
-};
-
-/**
- * Calculates semantic similarity score between prediction and food class
- * Based on word overlap and category matching
- * 
- * @param prediction The normalized prediction string
- * @param foodClass The normalized food class string
- * @returns Similarity score between 0-1
- */
-const calculateSimilarityScore = (prediction: string, foodClass: string): number => {
-  // Base score from direct string matching
-  const predictionWords = prediction.split(/\s+/);
-  const foodWords = foodClass.split(/\s+/);
-  
-  // Count matching words
-  const matchingWords = predictionWords.filter(word => 
-    foodWords.some(foodWord => foodWord.includes(word) || word.includes(foodWord))
-  );
-  
-  // Calculate word match ratio
-  const wordMatchRatio = matchingWords.length / Math.max(predictionWords.length, 1);
-  
-  // Get categories
-  const predictionCategory = identifyFoodCategory(prediction);
-  const foodCategory = identifyFoodCategory(foodClass);
-  
-  // Category matching bonus (0.2 if categories match)
-  const categoryBonus = predictionCategory && foodCategory && predictionCategory === foodCategory ? 0.2 : 0;
-  
-  // Direct inclusion bonus (0.3 if one string fully contains the other)
-  const inclusionBonus = prediction.includes(foodClass) || foodClass.includes(prediction) ? 0.3 : 0;
-  
-  // Combined score (capped at 1.0)
-  return Math.min(wordMatchRatio * 0.5 + categoryBonus + inclusionBonus, 1.0);
-};
-
-/**
- * Classifies an image and matches results with the food database
- * Uses similarity scoring and semantic matching for better results
- * 
- * @param imageElement HTML image element containing the image to classify
- * @param topK Number of top predictions to return (default: 3)
- * @returns Promise that resolves to array of prediction results with matched food items
+ * Recognizes food in an image and matches it with our food database
  */
 export const recognizeFood = async (
-  imageElement: HTMLImageElement,
-  topK = 3
+  imageElement: HTMLImageElement
 ): Promise<ExtendedPredictionResult[]> => {
-  // Get more base predictions to increase matching accuracy
-  const predictions = await classifyImage(imageElement, topK * 5);
-  
-  // Enhanced matching algorithm with similarity scoring
-  const extendedResults: ExtendedPredictionResult[] = [];
-  const processedMatches = new Set<string>();
-  
-  for (const prediction of predictions) {
-    const normalizedPrediction = prediction.className.toLowerCase();
+  try {
+    // Make sure the model is loaded
+    const model = await loadEnhancedModel();
     
-    // Calculate similarity scores for each food item
-    const matchingScores = allFoods
-      .filter(food => !processedMatches.has(food.name))
-      .map(food => {
-        // Find best matching class for this food
-        const bestClassMatch = food.classes.reduce((bestScore, cls) => {
-          const score = calculateSimilarityScore(normalizedPrediction, cls.toLowerCase());
-          return score > bestScore ? score : bestScore;
-        }, 0);
-        
-        return {
-          food,
-          score: bestClassMatch,
-          adjustedProbability: Math.min(prediction.probability * (0.5 + bestClassMatch * 0.5), 1.0) // Adjust probability by similarity, cap at 1.0
-        };
-      });
+    // Run classification
+    console.log('Analyzing food...');
+    const rawPredictions = await model.classify(imageElement);
     
-    // Sort by adjusted score
-    matchingScores.sort((a, b) => b.adjustedProbability - a.adjustedProbability);
-    
-    // Add best match if score is good enough (lowered threshold to improve match rate)
-    if (matchingScores.length > 0 && matchingScores[0].score > 0.3) {
-      const bestMatch = matchingScores[0].food;
-      processedMatches.add(bestMatch.name);
+    // Map the raw predictions to extended predictions with matched foods
+    const extendedPredictions: ExtendedPredictionResult[] = rawPredictions.map(prediction => {
+      // Find a matching food in our database
+      const normalizedClassName = prediction.className.toLowerCase();
       
-      extendedResults.push({
-        className: bestMatch.name,
-        // Boost confidence to ensure higher display values
-        probability: Math.min(matchingScores[0].adjustedProbability * 1.25, 1.0),
-        matchedFood: bestMatch
-      });
-      
-      // Stop once we have enough matches
-      if (extendedResults.length >= topK) {
-        break;
-      }
-    }
-  }
-  
-  // If we couldn't find enough good matches, add remaining top predictions
-  if (extendedResults.length < topK && predictions.length > 0) {
-    for (const prediction of predictions) {
-      const normalizedPrediction = prediction.className.toLowerCase();
-      
-      // Find any remaining foods that might be a reasonable match
-      const fallbackMatch = allFoods.find(food => 
-        !processedMatches.has(food.name) && 
-        food.classes.some(cls => normalizedPrediction.includes(cls.toLowerCase().split(' ')[0]))
+      // Try to find a direct match first
+      let matchedFood = enhancedFoodDatabase.find(food => 
+        food.name.toLowerCase() === normalizedClassName ||
+        food.tags.some(tag => normalizedClassName.includes(tag))
       );
       
-      if (fallbackMatch) {
-        processedMatches.add(fallbackMatch.name);
-        extendedResults.push({
-          className: fallbackMatch.name,
-          // Set a high probability for initial match display
-          probability: Math.min(prediction.probability * 0.9, 0.98), // Keep slightly under 100%
-          matchedFood: fallbackMatch
-        });
-        
-        if (extendedResults.length >= topK) {
-          break;
+      // If no direct match, try keywords matching
+      if (!matchedFood) {
+        const words = normalizedClassName.split(/\s+/);
+        for (const word of words) {
+          if (word.length < 3) continue; // Skip short words
+          
+          matchedFood = enhancedFoodDatabase.find(food => 
+            food.name.toLowerCase().includes(word) || 
+            food.tags.some(tag => tag.includes(word))
+          );
+          
+          if (matchedFood) break;
         }
       }
-    }
-  }
-  
-  // If still not enough matches, use direct class names as fallback
-  if (extendedResults.length < topK && predictions.length > 0) {
-    for (const prediction of predictions) {
-      if (extendedResults.length >= topK) break;
       
-      // Find the closest matching food from our database
-      const closestMatch = allFoods
-        .filter(food => !processedMatches.has(food.name))
-        .map(food => ({
-          food,
-          similarity: calculateSimilarityScore(prediction.className.toLowerCase(), food.name.toLowerCase())
-        }))
-        .sort((a, b) => b.similarity - a.similarity)[0];
-      
-      if (closestMatch && closestMatch.similarity > 0.2) {
-        processedMatches.add(closestMatch.food.name);
-        extendedResults.push({
-          className: closestMatch.food.name,
-          probability: Math.min(prediction.probability * 0.85, 0.95), // Keep reasonably high
-          matchedFood: closestMatch.food
-        });
-      }
-    }
+      return {
+        ...prediction,
+        matchedFood
+      };
+    });
+    
+    console.log('Food recognition results:', extendedPredictions);
+    return extendedPredictions;
+  } catch (error) {
+    console.error('Failed to recognize food:', error);
+    throw new Error('Failed to analyze the food image');
   }
-  
-  return extendedResults;
 };
 
-// Pre-load the model when the service is imported for faster initial recognition
-loadModel().catch(console.error);
+// Types of food the system can analyze
+export const foodAnalysisCapabilities = {
+  fruits: [
+    'Apple', 'Banana', 'Orange', 'Strawberry', 'Blueberry', 'Grape', 'Watermelon',
+    'Peach', 'Pear', 'Pineapple', 'Cherry', 'Kiwi', 'Mango', 'Lemon', 'Lime',
+    'Raspberry', 'Blackberry', 'Plum', 'Avocado', 'Coconut', 'Pomegranate', 
+    'Grapefruit', 'Apricot', 'Fig', 'Guava', 'Papaya', 'Passion Fruit'
+  ],
+  vegetables: [
+    'Carrot', 'Broccoli', 'Spinach', 'Lettuce', 'Tomato', 'Cucumber', 'Onion',
+    'Potato', 'Sweet Potato', 'Bell Pepper', 'Cabbage', 'Cauliflower', 'Corn',
+    'Mushroom', 'Eggplant', 'Zucchini', 'Asparagus', 'Brussels Sprout', 'Celery',
+    'Green Bean', 'Kale', 'Radish', 'Garlic', 'Leek', 'Peas', 'Pumpkin'
+  ],
+  proteins: [
+    'Chicken', 'Beef', 'Pork', 'Fish', 'Shrimp', 'Tofu', 'Eggs', 'Beans',
+    'Lentils', 'Chickpeas', 'Turkey', 'Lamb', 'Tuna', 'Salmon', 'Yogurt',
+    'Cheese', 'Nuts', 'Seeds', 'Quinoa'
+  ],
+  grains: [
+    'Rice', 'Bread', 'Pasta', 'Oats', 'Cereal', 'Quinoa', 'Barley', 'Corn',
+    'Tortilla', 'Bagel', 'Couscous', 'Bulgur', 'Buckwheat', 'Millet', 'Rye'
+  ],
+  prepared_foods: [
+    'Pizza', 'Burger', 'Sandwich', 'Salad', 'Soup', 'Stir Fry', 'Curry',
+    'Pasta Dish', 'Taco', 'Burrito', 'Sushi', 'Steak', 'Roast Chicken',
+    'Cake', 'Cookie', 'Ice Cream', 'Smoothie', 'Juice', 'Coffee', 'Tea'
+  ],
+  snacks: [
+    'Chips', 'Cookies', 'Crackers', 'Popcorn', 'Pretzels', 'Nuts', 'Granola Bar',
+    'Chocolate', 'Candy', 'Trail Mix', 'Dried Fruit', 'Yogurt', 'Cheese stick'
+  ]
+};
+
+// Pre-load the model when the service is imported
+loadEnhancedModel().catch(console.error);

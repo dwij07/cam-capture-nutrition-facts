@@ -15,7 +15,7 @@ import DashboardPage from "./pages/DashboardPage";
 import PlanPage from "./pages/PlanPage";
 import AchievementsPage from "./pages/AchievementsPage";
 import AboutPage from "./pages/AboutPage";
-import SeasonalFoodsPage from "./pages/SeasonalFoodsPage";
+import SeasonalFruitsPage from "./pages/SeasonalFruitsPage";
 import { supabase } from "./integrations/supabase/client";
 
 const queryClient = new QueryClient();
@@ -90,7 +90,7 @@ const App = () => (
               <AchievementsPage />
             </ProtectedRoute>
           } />
-          <Route path="/seasonal-foods" element={<SeasonalFoodsPage />} />
+          <Route path="/seasonal-fruits" element={<SeasonalFruitsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

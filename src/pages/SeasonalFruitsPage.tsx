@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   ArrowLeft, LogOut, Info, Search, 
-  Cherry, Apple, Banana, Carrot, 
-  Leaf, Sun, Snowflake, CloudRain
+  Apple, Cherry, Banana, Grape, Citrus, Nut
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,15 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import InnovativeFeatureCard from "@/components/InnovativeFeatureCard";
 
-// Example seasonal foods database
-const seasonalFoods = {
+// Example seasonal fruits database
+const seasonalFruits = {
   spring: [
-    {
-      name: "Asparagus",
-      nutritionalBenefits: "High in folate, fiber, and antioxidants.",
-      icon: <Leaf className="h-12 w-12 text-green-500" />,
-      badges: ["Vitamin K", "Folate", "Fiber"]
-    },
     {
       name: "Strawberries",
       nutritionalBenefits: "Rich in vitamin C and manganese.",
@@ -31,19 +24,19 @@ const seasonalFoods = {
       badges: ["Vitamin C", "Antioxidants", "Low-Calorie"]
     },
     {
-      name: "Peas",
-      nutritionalBenefits: "Good source of plant-based protein and fiber.",
-      icon: <Leaf className="h-12 w-12 text-green-500" />,
-      badges: ["Protein", "Fiber", "Vitamin A"]
+      name: "Cherries",
+      nutritionalBenefits: "High in antioxidants and anti-inflammatory compounds.",
+      icon: <Cherry className="h-12 w-12 text-red-600" />,
+      badges: ["Antioxidants", "Melatonin", "Anti-inflammatory"]
+    },
+    {
+      name: "Apricots",
+      nutritionalBenefits: "Good source of vitamin A and potassium.",
+      icon: <Apple className="h-12 w-12 text-orange-400" />,
+      badges: ["Vitamin A", "Potassium", "Fiber"]
     }
   ],
   summer: [
-    {
-      name: "Tomatoes",
-      nutritionalBenefits: "Contain lycopene, which may reduce cancer risk.",
-      icon: <Cherry className="h-12 w-12 text-red-500" />,
-      badges: ["Lycopene", "Vitamin C", "Potassium"]
-    },
     {
       name: "Watermelon",
       nutritionalBenefits: "Hydrating with high water content and citrulline.",
@@ -51,10 +44,16 @@ const seasonalFoods = {
       badges: ["Hydrating", "Vitamin A", "Lycopene"]
     },
     {
-      name: "Corn",
-      nutritionalBenefits: "Contains fiber, vitamins, and antioxidants.",
-      icon: <Banana className="h-12 w-12 text-yellow-500" />,
-      badges: ["Fiber", "Antioxidants", "B Vitamins"]
+      name: "Peaches",
+      nutritionalBenefits: "Rich in vitamins and minerals, supports digestive health.",
+      icon: <Apple className="h-12 w-12 text-orange-300" />,
+      badges: ["Vitamin C", "Fiber", "Potassium"]
+    },
+    {
+      name: "Blueberries",
+      nutritionalBenefits: "Packed with antioxidants and known to improve brain function.",
+      icon: <Cherry className="h-12 w-12 text-blue-600" />,
+      badges: ["Antioxidants", "Vitamin K", "Brain Health"]
     }
   ],
   fall: [
@@ -65,36 +64,36 @@ const seasonalFoods = {
       badges: ["Fiber", "Vitamin C", "Antioxidants"]
     },
     {
-      name: "Pumpkin",
-      nutritionalBenefits: "High in vitamin A and antioxidants.",
-      icon: <Banana className="h-12 w-12 text-orange-500" />,
-      badges: ["Vitamin A", "Fiber", "Potassium"]
+      name: "Grapes",
+      nutritionalBenefits: "Contains resveratrol which may benefit heart health.",
+      icon: <Grape className="h-12 w-12 text-purple-500" />,
+      badges: ["Antioxidants", "Resveratrol", "Vitamin K"]
     },
     {
-      name: "Brussels Sprouts",
-      nutritionalBenefits: "Packed with vitamins K and C.",
-      icon: <Carrot className="h-12 w-12 text-green-500" />,
-      badges: ["Vitamin K", "Vitamin C", "Fiber"]
+      name: "Pears",
+      nutritionalBenefits: "Good source of fiber and contains antioxidants.",
+      icon: <Apple className="h-12 w-12 text-green-300" />,
+      badges: ["Fiber", "Vitamin C", "Copper"]
     }
   ],
   winter: [
     {
-      name: "Citrus Fruits",
+      name: "Oranges",
       nutritionalBenefits: "Excellent source of vitamin C and flavonoids.",
-      icon: <Apple className="h-12 w-12 text-yellow-500" />,
+      icon: <Citrus className="h-12 w-12 text-orange-500" />,
       badges: ["Vitamin C", "Folate", "Potassium"]
     },
     {
-      name: "Kale",
-      nutritionalBenefits: "Nutrient-dense with vitamins A, K, and C.",
-      icon: <Leaf className="h-12 w-12 text-green-500" />,
-      badges: ["Vitamin K", "Vitamin A", "Calcium"]
+      name: "Grapefruit",
+      nutritionalBenefits: "High in nutrients and beneficial plant compounds.",
+      icon: <Citrus className="h-12 w-12 text-pink-300" />,
+      badges: ["Vitamin C", "Vitamin A", "Antioxidants"]
     },
     {
-      name: "Sweet Potatoes",
-      nutritionalBenefits: "Rich in beta-carotene and fiber.",
-      icon: <Carrot className="h-12 w-12 text-orange-500" />,
-      badges: ["Vitamin A", "Fiber", "Potassium"]
+      name: "Pomegranate",
+      nutritionalBenefits: "Rich in antioxidants, supports heart health.",
+      icon: <Cherry className="h-12 w-12 text-red-600" />,
+      badges: ["Antioxidants", "Vitamin K", "Potassium"]
     }
   ]
 };
@@ -108,14 +107,14 @@ const getCurrentSeason = () => {
   return "winter";
 };
 
-interface FoodCardProps {
+interface FruitCardProps {
   name: string;
   nutritionalBenefits: string;
   icon: React.ReactNode;
   badges: string[];
 }
 
-const FoodCard: React.FC<FoodCardProps> = ({ name, nutritionalBenefits, icon, badges }) => {
+const FruitCard: React.FC<FruitCardProps> = ({ name, nutritionalBenefits, icon, badges }) => {
   return (
     <InnovativeFeatureCard
       title={name}
@@ -126,7 +125,7 @@ const FoodCard: React.FC<FoodCardProps> = ({ name, nutritionalBenefits, icon, ba
   );
 };
 
-const SeasonalFoodsPage: React.FC = () => {
+const SeasonalFruitsPage: React.FC = () => {
   const navigate = useNavigate();
   const [currentSeason, setCurrentSeason] = useState(getCurrentSeason());
   const [searchTerm, setSearchTerm] = useState("");
@@ -148,31 +147,31 @@ const SeasonalFoodsPage: React.FC = () => {
     }
   };
 
-  // Filter foods based on search term
-  const filteredFoods = searchTerm 
-    ? Object.values(seasonalFoods).flat().filter(food => 
-        food.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        food.nutritionalBenefits.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        food.badges.some(badge => badge.toLowerCase().includes(searchTerm.toLowerCase()))
+  // Filter fruits based on search term
+  const filteredFruits = searchTerm 
+    ? Object.values(seasonalFruits).flat().filter(fruit => 
+        fruit.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        fruit.nutritionalBenefits.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        fruit.badges.some(badge => badge.toLowerCase().includes(searchTerm.toLowerCase()))
       )
-    : seasonalFoods[currentSeason as keyof typeof seasonalFoods];
+    : seasonalFruits[currentSeason as keyof typeof seasonalFruits];
 
   const seasonIcons = {
-    spring: <CloudRain className="h-6 w-6 text-blue-500" />,
-    summer: <Sun className="h-6 w-6 text-yellow-500" />,
-    fall: <Leaf className="h-6 w-6 text-orange-500" />,
-    winter: <Snowflake className="h-6 w-6 text-blue-300" />
+    spring: <Cherry className="h-6 w-6 text-pink-400" />,
+    summer: <Banana className="h-6 w-6 text-yellow-500" />,
+    fall: <Apple className="h-6 w-6 text-orange-500" />,
+    winter: <Citrus className="h-6 w-6 text-orange-300" />
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 dark:from-orange-900/20 dark:to-pink-900/20">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header with back button, about, and logout */}
         <div className="flex items-center justify-between mb-6">
           <Button 
             variant="ghost" 
             onClick={() => navigate("/info")}
-            className="mr-4 text-green-700 hover:text-green-800 hover:bg-green-50 dark:text-green-400 dark:hover:text-green-300 dark:hover:bg-green-900/20"
+            className="mr-4 text-orange-700 hover:text-orange-800 hover:bg-orange-50 dark:text-orange-400 dark:hover:text-orange-300 dark:hover:bg-orange-900/20"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
@@ -182,10 +181,10 @@ const SeasonalFoodsPage: React.FC = () => {
             <Button 
               variant="outline" 
               onClick={() => navigate("/about")}
-              className="border-green-300 hover:bg-green-50 dark:border-green-800 dark:hover:bg-green-900/20"
+              className="border-orange-300 hover:bg-orange-50 dark:border-orange-800 dark:hover:bg-orange-900/20"
             >
-              <Info className="h-4 w-4 mr-2 text-green-600 dark:text-green-400" />
-              <span className="text-green-700 dark:text-green-400">About</span>
+              <Info className="h-4 w-4 mr-2 text-orange-600 dark:text-orange-400" />
+              <span className="text-orange-700 dark:text-orange-400">About</span>
             </Button>
             
             <Button 
@@ -206,12 +205,12 @@ const SeasonalFoodsPage: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="mb-10 text-center"
         >
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-4">
-            Seasonal Foods
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-4">
+            Seasonal Fruits
           </h1>
           <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-            Discover foods that are currently in season for maximum nutrition, flavor, and sustainability.
-            Eating seasonally can provide more nutrients and support local agriculture.
+            Discover fruits that are currently in season for maximum nutrition, flavor, and enjoyment.
+            Eating seasonal fruits provides more nutrients and supports sustainable agriculture.
           </p>
         </motion.div>
         
@@ -220,18 +219,18 @@ const SeasonalFoodsPage: React.FC = () => {
           <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
           <Input
             type="text"
-            placeholder="Search for foods, nutrients, or seasons..."
+            placeholder="Search for fruits, nutrients, or seasons..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-green-200 dark:border-green-800 focus:border-green-400 dark:focus:border-green-600"
+            className="pl-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-orange-200 dark:border-orange-800 focus:border-orange-400 dark:focus:border-orange-600"
           />
         </div>
         
         {/* Season tabs */}
         {!searchTerm && (
           <Tabs defaultValue={currentSeason} onValueChange={(value) => setCurrentSeason(value)} className="mb-8">
-            <TabsList className="grid grid-cols-4 max-w-md mx-auto bg-green-100/50 dark:bg-green-900/30">
-              <TabsTrigger value="spring" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-200 data-[state=active]:to-blue-200 data-[state=active]:dark:from-green-800/50 data-[state=active]:dark:to-blue-800/50">
+            <TabsList className="grid grid-cols-4 max-w-md mx-auto bg-orange-100/50 dark:bg-orange-900/30">
+              <TabsTrigger value="spring" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-200 data-[state=active]:to-orange-200 data-[state=active]:dark:from-pink-800/50 data-[state=active]:dark:to-orange-800/50">
                 {seasonIcons.spring} Spring
               </TabsTrigger>
               <TabsTrigger value="summer" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-200 data-[state=active]:to-orange-200 data-[state=active]:dark:from-yellow-800/50 data-[state=active]:dark:to-orange-800/50">
@@ -240,7 +239,7 @@ const SeasonalFoodsPage: React.FC = () => {
               <TabsTrigger value="fall" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-200 data-[state=active]:to-red-200 data-[state=active]:dark:from-orange-800/50 data-[state=active]:dark:to-red-800/50">
                 {seasonIcons.fall} Fall
               </TabsTrigger>
-              <TabsTrigger value="winter" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-200 data-[state=active]:to-purple-200 data-[state=active]:dark:from-blue-800/50 data-[state=active]:dark:to-purple-800/50">
+              <TabsTrigger value="winter" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-200 data-[state=active]:to-purple-200 data-[state=active]:dark:from-orange-800/50 data-[state=active]:dark:to-purple-800/50">
                 {seasonIcons.winter} Winter
               </TabsTrigger>
             </TabsList>
@@ -249,113 +248,113 @@ const SeasonalFoodsPage: React.FC = () => {
         
         {/* Season description */}
         {!searchTerm && (
-          <Card className="mb-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-green-200 dark:border-green-800">
+          <Card className="mb-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-orange-200 dark:border-orange-800">
             <CardContent className="p-6">
               <div className="flex items-center mb-4">
                 {currentSeason === "spring" && (
                   <>
                     {seasonIcons.spring}
-                    <h2 className="text-xl font-semibold ml-2 text-blue-600 dark:text-blue-400">Spring Foods (March-May)</h2>
+                    <h2 className="text-xl font-semibold ml-2 text-pink-600 dark:text-pink-400">Spring Fruits (March-May)</h2>
                   </>
                 )}
                 {currentSeason === "summer" && (
                   <>
                     {seasonIcons.summer}
-                    <h2 className="text-xl font-semibold ml-2 text-yellow-600 dark:text-yellow-400">Summer Foods (June-August)</h2>
+                    <h2 className="text-xl font-semibold ml-2 text-yellow-600 dark:text-yellow-400">Summer Fruits (June-August)</h2>
                   </>
                 )}
                 {currentSeason === "fall" && (
                   <>
                     {seasonIcons.fall}
-                    <h2 className="text-xl font-semibold ml-2 text-orange-600 dark:text-orange-400">Fall Foods (September-November)</h2>
+                    <h2 className="text-xl font-semibold ml-2 text-orange-600 dark:text-orange-400">Fall Fruits (September-November)</h2>
                   </>
                 )}
                 {currentSeason === "winter" && (
                   <>
                     {seasonIcons.winter}
-                    <h2 className="text-xl font-semibold ml-2 text-blue-500 dark:text-blue-400">Winter Foods (December-February)</h2>
+                    <h2 className="text-xl font-semibold ml-2 text-orange-500 dark:text-orange-400">Winter Fruits (December-February)</h2>
                   </>
                 )}
               </div>
               
               <p className="text-gray-700 dark:text-gray-300">
-                {currentSeason === "spring" && "Spring brings tender, leafy vegetables like lettuce, spinach, and other early produce that's perfect for lighter meals."}
-                {currentSeason === "summer" && "Summer's abundance includes juicy fruits, crisp vegetables, and berries packed with nutrients and natural sweetness."}
-                {currentSeason === "fall" && "Fall features hearty root vegetables, crisp apples, and nutrient-dense foods that help prepare for winter."}
-                {currentSeason === "winter" && "Winter offers citrus fruits rich in vitamin C, hardy greens, and root vegetables that store well and provide essential nutrients."}
+                {currentSeason === "spring" && "Spring brings sweet berries and early harvest fruits that are rich in antioxidants and perfect for fresh snacking."}
+                {currentSeason === "summer" && "Summer offers juicy, hydrating fruits packed with nutrients and natural sweetness - perfect for hot days."}
+                {currentSeason === "fall" && "Fall features crisp apples, sweet grapes, and nutrient-dense fruits that help boost immunity for winter."}
+                {currentSeason === "winter" && "Winter offers citrus fruits rich in vitamin C and immune-boosting properties to keep you healthy during cold months."}
               </p>
             </CardContent>
           </Card>
         )}
         
-        {/* Foods grid */}
+        {/* Fruits grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {searchTerm ? (
-            filteredFoods.length > 0 ? (
-              filteredFoods.map((food, index) => (
+            filteredFruits.length > 0 ? (
+              filteredFruits.map((fruit, index) => (
                 <motion.div
-                  key={`${food.name}-${index}`}
+                  key={`${fruit.name}-${index}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                 >
-                  <FoodCard {...food} />
+                  <FruitCard {...fruit} />
                 </motion.div>
               ))
             ) : (
               <div className="col-span-full text-center py-10">
-                <p className="text-lg text-gray-600 dark:text-gray-400">No foods found matching "{searchTerm}". Try another search term.</p>
+                <p className="text-lg text-gray-600 dark:text-gray-400">No fruits found matching "{searchTerm}". Try another search term.</p>
               </div>
             )
           ) : (
-            seasonalFoods[currentSeason as keyof typeof seasonalFoods].map((food, index) => (
+            seasonalFruits[currentSeason as keyof typeof seasonalFruits].map((fruit, index) => (
               <motion.div
-                key={`${food.name}-${index}`}
+                key={`${fruit.name}-${index}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
-                <FoodCard {...food} />
+                <FruitCard {...fruit} />
               </motion.div>
             ))
           )}
         </div>
         
         {/* Benefits section */}
-        <Card className="mb-8 bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border-green-200 dark:border-green-700">
+        <Card className="mb-8 bg-gradient-to-br from-orange-50 to-pink-50 dark:from-orange-900/20 dark:to-pink-900/20 border-orange-200 dark:border-orange-700">
           <CardContent className="p-8">
-            <h2 className="text-2xl font-semibold mb-6 bg-gradient-to-r from-green-700 to-blue-700 dark:from-green-400 dark:to-blue-400 bg-clip-text text-transparent">
-              Benefits of Eating Seasonally
+            <h2 className="text-2xl font-semibold mb-6 bg-gradient-to-r from-orange-700 to-red-700 dark:from-orange-400 dark:to-red-400 bg-clip-text text-transparent">
+              Benefits of Eating Seasonal Fruits
             </h2>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="space-y-2">
-                <h3 className="font-semibold text-green-700 dark:text-green-400 flex items-center">
-                  <Leaf className="h-5 w-5 mr-2" />
+                <h3 className="font-semibold text-orange-700 dark:text-orange-400 flex items-center">
+                  <Apple className="h-5 w-5 mr-2" />
                   Better Nutrition
                 </h3>
                 <p className="text-gray-700 dark:text-gray-300">
-                  Seasonal foods are harvested at peak ripeness, offering maximum nutritional value and flavor.
+                  Seasonal fruits are harvested at peak ripeness, offering maximum nutritional value and flavor.
                 </p>
               </div>
               
               <div className="space-y-2">
-                <h3 className="font-semibold text-blue-700 dark:text-blue-400 flex items-center">
-                  <CloudRain className="h-5 w-5 mr-2" />
+                <h3 className="font-semibold text-red-700 dark:text-red-400 flex items-center">
+                  <Banana className="h-5 w-5 mr-2" />
                   Environmental Benefits
                 </h3>
                 <p className="text-gray-700 dark:text-gray-300">
-                  Eating seasonally reduces carbon footprint by minimizing transportation and storage requirements.
+                  Eating seasonal fruits reduces carbon footprint by minimizing transportation and storage requirements.
                 </p>
               </div>
               
               <div className="space-y-2">
-                <h3 className="font-semibold text-orange-700 dark:text-orange-400 flex items-center">
-                  <Sun className="h-5 w-5 mr-2" />
+                <h3 className="font-semibold text-pink-700 dark:text-pink-400 flex items-center">
+                  <Cherry className="h-5 w-5 mr-2" />
                   Enhanced Flavor
                 </h3>
                 <p className="text-gray-700 dark:text-gray-300">
-                  Fruits and vegetables grown and harvested in their natural season taste better and have superior texture.
+                  Fruits grown and harvested in their natural season taste better and have superior texture and sweetness.
                 </p>
               </div>
             </div>
@@ -366,4 +365,4 @@ const SeasonalFoodsPage: React.FC = () => {
   );
 };
 
-export default SeasonalFoodsPage;
+export default SeasonalFruitsPage;
