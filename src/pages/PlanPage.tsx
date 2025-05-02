@@ -9,7 +9,7 @@ import { loadUserProfile, saveUserProfile } from "@/utils/storageService";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, RefreshCw } from "lucide-react";
 
 const PlanPage = () => {
   const [profile, setProfile] = useState<any>(null);
@@ -50,17 +50,40 @@ const PlanPage = () => {
     });
   };
 
+  const handleRegeneratePlan = () => {
+    if (profile) {
+      const newDietPlan = generateDietPlan(profile, profile.calorieGoal);
+      setDietPlan(newDietPlan);
+      
+      toast({
+        title: "Diet Plan Regenerated",
+        description: "Your meal plan has been refreshed with new options."
+      });
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
-      <div className="flex items-center mb-6">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <Button 
           variant="ghost" 
           onClick={() => navigate("/info")}
-          className="mr-4"
+          className="mr-auto"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Home
         </Button>
+        
+        {dietPlan && (
+          <Button 
+            onClick={handleRegeneratePlan}
+            variant="outline"
+            className="ml-auto"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Regenerate Plan
+          </Button>
+        )}
       </div>
       <Header />
       {dietPlan ? (

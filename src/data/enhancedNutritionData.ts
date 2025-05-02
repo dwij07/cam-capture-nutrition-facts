@@ -445,10 +445,8 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
   const carbs = Math.round((tdee * carbsRatio) / 4); // 4 calories per gram of carbs
   const fat = Math.round((tdee * fatRatio) / 9); // 9 calories per gram of fat
   
-  // Create a sample 3-day meal plan
-  // This is a simplified version - in a real app, this would be much more sophisticated
+  // Create a recipe generation function
   const createRecipe = (name: string, isVeg: boolean): Recipe => {
-    // This is a simplified example - in a real app, these would come from a database
     return {
       ingredients: [
         isVeg ? "1 cup quinoa" : "4 oz chicken breast",
@@ -470,7 +468,7 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
     };
   };
 
-  // Example meal options
+  // Comprehensive meal options with vegetarian and non-vegetarian choices
   const breakfastOptions: MealWithRecipe[] = [
     {
       name: "Overnight Oats with Berries",
@@ -483,14 +481,34 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
       recipe: createRecipe("Overnight Oats", true)
     },
     {
-      name: "Egg White Omelette with Spinach",
-      portion: "3 egg whites",
+      name: "Greek Yogurt Parfait",
+      portion: "1 cup",
       calories: Math.round(tdee * 0.2),
-      protein: Math.round(protein * 0.2),
-      carbs: Math.round(carbs * 0.1),
-      fat: Math.round(fat * 0.15),
+      protein: Math.round(protein * 0.18),
+      carbs: Math.round(carbs * 0.15),
+      fat: Math.round(fat * 0.12),
       isVegetarian: true,
-      recipe: createRecipe("Egg White Omelette", true)
+      recipe: createRecipe("Greek Yogurt Parfait", true)
+    },
+    {
+      name: "Vegetable Tofu Scramble",
+      portion: "1 plate",
+      calories: Math.round(tdee * 0.22),
+      protein: Math.round(protein * 0.20),
+      carbs: Math.round(carbs * 0.15),
+      fat: Math.round(fat * 0.18),
+      isVegetarian: true,
+      recipe: createRecipe("Tofu Scramble", true)
+    },
+    {
+      name: "Avocado Toast with Poached Eggs",
+      portion: "2 slices",
+      calories: Math.round(tdee * 0.23),
+      protein: Math.round(protein * 0.18),
+      carbs: Math.round(carbs * 0.15),
+      fat: Math.round(fat * 0.25),
+      isVegetarian: true,
+      recipe: createRecipe("Avocado Toast", true)
     },
     {
       name: "Turkey Bacon Breakfast Sandwich",
@@ -501,6 +519,36 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
       fat: Math.round(fat * 0.2),
       isVegetarian: false,
       recipe: createRecipe("Breakfast Sandwich", false)
+    },
+    {
+      name: "Ham and Cheese Omelette",
+      portion: "3 eggs",
+      calories: Math.round(tdee * 0.23),
+      protein: Math.round(protein * 0.28),
+      carbs: Math.round(carbs * 0.05),
+      fat: Math.round(fat * 0.25),
+      isVegetarian: false,
+      recipe: createRecipe("Ham Omelette", false)
+    },
+    {
+      name: "Steak and Eggs",
+      portion: "4oz steak, 2 eggs",
+      calories: Math.round(tdee * 0.28),
+      protein: Math.round(protein * 0.35),
+      carbs: Math.round(carbs * 0.05),
+      fat: Math.round(fat * 0.30),
+      isVegetarian: false,
+      recipe: createRecipe("Steak and Eggs", false)
+    },
+    {
+      name: "Smoked Salmon Bagel",
+      portion: "1 bagel",
+      calories: Math.round(tdee * 0.25),
+      protein: Math.round(protein * 0.22),
+      carbs: Math.round(carbs * 0.25),
+      fat: Math.round(fat * 0.18),
+      isVegetarian: false,
+      recipe: createRecipe("Salmon Bagel", false)
     }
   ];
 
@@ -516,6 +564,36 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
       recipe: createRecipe("Quinoa Bowl", true)
     },
     {
+      name: "Mediterranean Chickpea Salad",
+      portion: "1 large bowl",
+      calories: Math.round(tdee * 0.28),
+      protein: Math.round(protein * 0.22),
+      carbs: Math.round(carbs * 0.25),
+      fat: Math.round(fat * 0.22),
+      isVegetarian: true,
+      recipe: createRecipe("Chickpea Salad", true)
+    },
+    {
+      name: "Lentil and Vegetable Soup",
+      portion: "1 large bowl",
+      calories: Math.round(tdee * 0.25),
+      protein: Math.round(protein * 0.18),
+      carbs: Math.round(carbs * 0.28),
+      fat: Math.round(fat * 0.15),
+      isVegetarian: true,
+      recipe: createRecipe("Lentil Soup", true)
+    },
+    {
+      name: "Spinach and Feta Wrap",
+      portion: "1 wrap",
+      calories: Math.round(tdee * 0.27),
+      protein: Math.round(protein * 0.20),
+      carbs: Math.round(carbs * 0.28),
+      fat: Math.round(fat * 0.22),
+      isVegetarian: true,
+      recipe: createRecipe("Spinach Wrap", true)
+    },
+    {
       name: "Grilled Chicken Salad",
       portion: "1 large bowl",
       calories: Math.round(tdee * 0.3),
@@ -524,6 +602,36 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
       fat: Math.round(fat * 0.25),
       isVegetarian: false,
       recipe: createRecipe("Chicken Salad", false)
+    },
+    {
+      name: "Turkey Club Sandwich",
+      portion: "1 sandwich",
+      calories: Math.round(tdee * 0.32),
+      protein: Math.round(protein * 0.30),
+      carbs: Math.round(carbs * 0.25),
+      fat: Math.round(fat * 0.22),
+      isVegetarian: false,
+      recipe: createRecipe("Turkey Sandwich", false)
+    },
+    {
+      name: "Beef and Broccoli Stir Fry",
+      portion: "1 cup",
+      calories: Math.round(tdee * 0.33),
+      protein: Math.round(protein * 0.32),
+      carbs: Math.round(carbs * 0.22),
+      fat: Math.round(fat * 0.25),
+      isVegetarian: false,
+      recipe: createRecipe("Beef Stir Fry", false)
+    },
+    {
+      name: "Tuna Nicoise Salad",
+      portion: "1 large bowl",
+      calories: Math.round(tdee * 0.28),
+      protein: Math.round(protein * 0.32),
+      carbs: Math.round(carbs * 0.18),
+      fat: Math.round(fat * 0.25),
+      isVegetarian: false,
+      recipe: createRecipe("Tuna Salad", false)
     }
   ];
 
@@ -539,6 +647,36 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
       recipe: createRecipe("Lentil Curry", true)
     },
     {
+      name: "Vegetable and Tofu Stir-Fry",
+      portion: "1 large plate",
+      calories: Math.round(tdee * 0.32),
+      protein: Math.round(protein * 0.22),
+      carbs: Math.round(carbs * 0.30),
+      fat: Math.round(fat * 0.25),
+      isVegetarian: true,
+      recipe: createRecipe("Tofu Stir-Fry", true)
+    },
+    {
+      name: "Eggplant Parmesan with Quinoa",
+      portion: "1 large serving",
+      calories: Math.round(tdee * 0.33),
+      protein: Math.round(protein * 0.20),
+      carbs: Math.round(carbs * 0.32),
+      fat: Math.round(fat * 0.28),
+      isVegetarian: true,
+      recipe: createRecipe("Eggplant Parmesan", true)
+    },
+    {
+      name: "Vegetarian Chili with Cornbread",
+      portion: "1 bowl with 1 piece cornbread",
+      calories: Math.round(tdee * 0.34),
+      protein: Math.round(protein * 0.22),
+      carbs: Math.round(carbs * 0.38),
+      fat: Math.round(fat * 0.25),
+      isVegetarian: true,
+      recipe: createRecipe("Vegetarian Chili", true)
+    },
+    {
       name: "Grilled Salmon with Vegetables",
       portion: "6 oz salmon",
       calories: Math.round(tdee * 0.35),
@@ -547,6 +685,36 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
       fat: Math.round(fat * 0.35),
       isVegetarian: false,
       recipe: createRecipe("Grilled Salmon", false)
+    },
+    {
+      name: "Baked Chicken with Sweet Potato",
+      portion: "6 oz chicken, 1 medium sweet potato",
+      calories: Math.round(tdee * 0.33),
+      protein: Math.round(protein * 0.38),
+      carbs: Math.round(carbs * 0.28),
+      fat: Math.round(fat * 0.20),
+      isVegetarian: false,
+      recipe: createRecipe("Baked Chicken", false)
+    },
+    {
+      name: "Steak with Roasted Vegetables",
+      portion: "6 oz steak, 1 cup vegetables",
+      calories: Math.round(tdee * 0.38),
+      protein: Math.round(protein * 0.42),
+      carbs: Math.round(carbs * 0.15),
+      fat: Math.round(fat * 0.40),
+      isVegetarian: false,
+      recipe: createRecipe("Steak Dinner", false)
+    },
+    {
+      name: "Shrimp Scampi with Zucchini Noodles",
+      portion: "6 oz shrimp, 2 cups zoodles",
+      calories: Math.round(tdee * 0.32),
+      protein: Math.round(protein * 0.35),
+      carbs: Math.round(carbs * 0.12),
+      fat: Math.round(fat * 0.30),
+      isVegetarian: false,
+      recipe: createRecipe("Shrimp Scampi", false)
     }
   ];
 
@@ -562,62 +730,27 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
       recipe: createRecipe("Trail Mix", true)
     },
     {
+      name: "Apple with Almond Butter",
+      portion: "1 medium apple, 2 tbsp almond butter",
+      calories: Math.round(tdee * 0.12),
+      protein: Math.round(protein * 0.08),
+      carbs: Math.round(carbs * 0.18),
+      fat: Math.round(fat * 0.15),
+      isVegetarian: true,
+      recipe: createRecipe("Apple Snack", true)
+    },
+    {
+      name: "Hummus with Vegetable Sticks",
+      portion: "1/4 cup hummus, 1 cup vegetables",
+      calories: Math.round(tdee * 0.11),
+      protein: Math.round(protein * 0.07),
+      carbs: Math.round(carbs * 0.12),
+      fat: Math.round(fat * 0.14),
+      isVegetarian: true,
+      recipe: createRecipe("Hummus Snack", true)
+    },
+    {
       name: "Greek Yogurt with Honey",
       portion: "1 cup",
       calories: Math.round(tdee * 0.15),
-      protein: Math.round(protein * 0.15),
-      carbs: Math.round(carbs * 0.1),
-      fat: Math.round(fat * 0.1),
-      isVegetarian: true,
-      recipe: createRecipe("Greek Yogurt Bowl", true)
-    }
-  ];
-
-  // Generate 5 days of meals
-  const days: DayPlan[] = Array.from({ length: 5 }, (_, dayIndex) => {
-    const getRandomMeal = (options: MealWithRecipe[], usedMeals: Set<string>) => {
-      const availableOptions = options.filter(meal => !usedMeals.has(meal.name));
-      const selectedMeal = availableOptions[Math.floor(Math.random() * availableOptions.length)];
-      usedMeals.add(selectedMeal.name);
-      return selectedMeal;
-    };
-
-    const usedMeals = new Set<string>();
-    
-    return {
-      breakfast: {
-        name: "Breakfast",
-        foods: [getRandomMeal(breakfastOptions, usedMeals)],
-        totalCalories: Math.round(tdee * 0.2)
-      },
-      lunch: {
-        name: "Lunch",
-        foods: [getRandomMeal(lunchOptions, usedMeals)],
-        totalCalories: Math.round(tdee * 0.3)
-      },
-      dinner: {
-        name: "Dinner",
-        foods: [getRandomMeal(dinnerOptions, usedMeals)],
-        totalCalories: Math.round(tdee * 0.35)
-      },
-      snacks: {
-        name: "Snacks",
-        foods: [getRandomMeal(snackOptions, usedMeals)],
-        totalCalories: Math.round(tdee * 0.15)
-      }
-    };
-  });
-
-  return {
-    id: "default-plan",
-    name: planName,
-    description: planDescription,
-    totalCalories: tdee,
-    macros: {
-      protein,
-      carbs,
-      fat
-    },
-    days
-  };
-};
+      protein: Math.round(protein *

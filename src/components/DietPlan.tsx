@@ -174,6 +174,11 @@ const DietPlan: React.FC<DietPlanProps> = ({ dietPlan }) => {
                                     <Leaf className="h-3 w-3 mr-1" /> Veg
                                   </Badge>
                                 )}
+                                {!food.isVegetarian && (
+                                  <Badge variant="outline" className="text-red-600 border-red-600">
+                                    <Beef className="h-3 w-3 mr-1" /> Non-Veg
+                                  </Badge>
+                                )}
                               </div>
                               <div className="text-sm text-muted-foreground">{food.portion}</div>
                             </div>
@@ -188,112 +193,7 @@ const DietPlan: React.FC<DietPlanProps> = ({ dietPlan }) => {
                       ))
                     ) : (
                       <div className="text-center py-4 text-muted-foreground">
-                        No {dietType} options available for this meal.
-                      </div>
-                    )}
-                    
-                    {/* Suggested alternatives section */}
-                    {filteredFoods.length > 0 && (
-                      <div className="mt-4">
-                        <h4 className="text-sm font-medium mb-2">Alternative suggestions:</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {mealType === "breakfast" && dietType === "all" && (
-                            <>
-                              <div className="text-xs p-2 bg-muted rounded-md">Greek yogurt with honey and granola</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Quinoa breakfast bowl with fruits</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Protein pancakes with berries</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Avocado toast with poached eggs</div>
-                            </>
-                          )}
-                          {mealType === "breakfast" && dietType === "vegetarian" && (
-                            <>
-                              <div className="text-xs p-2 bg-muted rounded-md">Oatmeal with almond milk and berries</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Vegetable omelet with spinach and tomatoes</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Peanut butter banana smoothie bowl</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Chia seed pudding with mango</div>
-                            </>
-                          )}
-                          {mealType === "breakfast" && dietType === "non-vegetarian" && (
-                            <>
-                              <div className="text-xs p-2 bg-muted rounded-md">Bacon and eggs with toast</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Smoked salmon bagel with cream cheese</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Turkey and cheese breakfast burrito</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Ham and cheese omelet</div>
-                            </>
-                          )}
-                          {mealType === "lunch" && dietType === "all" && (
-                            <>
-                              <div className="text-xs p-2 bg-muted rounded-md">Mediterranean salad with grilled chicken</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Tuna wrap with mixed greens</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Lentil soup with whole grain bread</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Quinoa bowl with roasted vegetables</div>
-                            </>
-                          )}
-                          {mealType === "lunch" && dietType === "vegetarian" && (
-                            <>
-                              <div className="text-xs p-2 bg-muted rounded-md">Chickpea salad with tahini dressing</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Vegetable stir-fry with tofu</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Caprese sandwich with pesto</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Sweet potato and black bean bowl</div>
-                            </>
-                          )}
-                          {mealType === "lunch" && dietType === "non-vegetarian" && (
-                            <>
-                              <div className="text-xs p-2 bg-muted rounded-md">Chicken Caesar salad wrap</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Tuna nicoise salad</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Turkey club sandwich</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Beef and vegetable stir-fry</div>
-                            </>
-                          )}
-                          {mealType === "dinner" && dietType === "all" && (
-                            <>
-                              <div className="text-xs p-2 bg-muted rounded-md">Grilled salmon with asparagus</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Chicken stir-fry with brown rice</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Vegetable lasagna with side salad</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Stuffed bell peppers with quinoa</div>
-                            </>
-                          )}
-                          {mealType === "dinner" && dietType === "vegetarian" && (
-                            <>
-                              <div className="text-xs p-2 bg-muted rounded-md">Eggplant parmesan with whole grain pasta</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Lentil and vegetable curry with rice</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Stuffed portobello mushrooms</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Vegetable and bean enchiladas</div>
-                            </>
-                          )}
-                          {mealType === "dinner" && dietType === "non-vegetarian" && (
-                            <>
-                              <div className="text-xs p-2 bg-muted rounded-md">Grilled steak with roasted potatoes</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Baked chicken with sweet potato</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Shrimp scampi with zucchini noodles</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Pork chops with apple and cabbage</div>
-                            </>
-                          )}
-                          {mealType === "snacks" && dietType === "all" && (
-                            <>
-                              <div className="text-xs p-2 bg-muted rounded-md">Apple with almond butter</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Greek yogurt with berries</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Hummus with vegetable sticks</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Trail mix with nuts and dried fruit</div>
-                            </>
-                          )}
-                          {mealType === "snacks" && dietType === "vegetarian" && (
-                            <>
-                              <div className="text-xs p-2 bg-muted rounded-md">Edamame with sea salt</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Avocado toast bites</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Energy balls with dates and nuts</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Fruit and nut yogurt parfait</div>
-                            </>
-                          )}
-                          {mealType === "snacks" && dietType === "non-vegetarian" && (
-                            <>
-                              <div className="text-xs p-2 bg-muted rounded-md">Turkey and cheese roll-ups</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Hard-boiled eggs with salt</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Beef jerky</div>
-                              <div className="text-xs p-2 bg-muted rounded-md">Tuna on cucumber rounds</div>
-                            </>
-                          )}
-                        </div>
+                        No {dietType} options available for this meal. Try selecting a different diet type.
                       </div>
                     )}
                   </div>
