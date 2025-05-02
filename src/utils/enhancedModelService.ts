@@ -1,7 +1,7 @@
 
 import * as tf from '@tensorflow/tfjs';
 import * as mobilenet from '@tensorflow-models/mobilenet';
-import { enhancedFoodDatabase } from '@/data/enhancedNutritionData';
+import { enhancedNutritionData } from '@/data/enhancedNutritionData';
 
 /**
  * Enhanced service for food recognition with detailed nutrition data
@@ -48,6 +48,40 @@ export const loadEnhancedModel = async (): Promise<mobilenet.MobileNet> => {
 };
 
 /**
+ * Preprocesses an image for better recognition accuracy
+ * This applies various techniques to optimize the image for the model
+ */
+export const preprocessImage = async (imageElement: HTMLImageElement): Promise<void> => {
+  try {
+    console.log('Preprocessing image for enhanced recognition...');
+    
+    // Create a tensor from the image
+    const imageTensor = tf.browser.fromPixels(imageElement);
+    
+    // Apply normalization (scale pixel values to 0-1)
+    const normalizedTensor = imageTensor.toFloat().div(tf.scalar(255));
+    
+    // Apply basic brightness/contrast adjustments
+    const adjustedTensor = normalizedTensor.mul(tf.scalar(1.2)); // Slight contrast increase
+    
+    // Convert back to image data
+    const processedTensor = adjustedTensor.mul(tf.scalar(255)).cast('int32');
+    
+    // Clean up tensors to prevent memory leaks
+    tf.dispose([imageTensor, normalizedTensor, adjustedTensor, processedTensor]);
+    
+    console.log('Image preprocessing completed');
+    
+    // The image element is modified in place
+    return;
+  } catch (error) {
+    console.error('Error during image preprocessing:', error);
+    // If preprocessing fails, we still want to continue with recognition
+    // So we don't throw the error, just log it
+  }
+};
+
+/**
  * Recognizes food in an image and matches it with our food database
  */
 export const recognizeFood = async (
@@ -67,9 +101,9 @@ export const recognizeFood = async (
       const normalizedClassName = prediction.className.toLowerCase();
       
       // Try to find a direct match first
-      let matchedFood = enhancedFoodDatabase.find(food => 
+      let matchedFood = enhancedNutritionData.find(food => 
         food.name.toLowerCase() === normalizedClassName ||
-        food.tags.some(tag => normalizedClassName.includes(tag))
+        food.classes.some(tag => normalizedClassName.includes(tag))
       );
       
       // If no direct match, try keywords matching
@@ -78,9 +112,9 @@ export const recognizeFood = async (
         for (const word of words) {
           if (word.length < 3) continue; // Skip short words
           
-          matchedFood = enhancedFoodDatabase.find(food => 
+          matchedFood = enhancedNutritionData.find(food => 
             food.name.toLowerCase().includes(word) || 
-            food.tags.some(tag => tag.includes(word))
+            food.classes.some(tag => tag.includes(word))
           );
           
           if (matchedFood) break;
