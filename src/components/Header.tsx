@@ -45,7 +45,7 @@ const Header: React.FC = () => {
           </Link>
           
           <Link 
-            to="/seasonal-foods" 
+            to="/seasonal-fruits" 
             className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors font-medium"
           >
             Seasonal Foods
