@@ -1,3 +1,4 @@
+
 import { nutritionData, FoodItem, NutritionInfo, findFoodByClass } from './nutritionData';
 
 // Enhanced nutrition data with more properties
@@ -753,4 +754,110 @@ export const generateDietPlan = (profile: ProfileData, tdee: number) => {
       name: "Greek Yogurt with Honey",
       portion: "1 cup",
       calories: Math.round(tdee * 0.15),
-      protein: Math.round(protein *
+      protein: Math.round(protein * 0.12),
+      carbs: Math.round(carbs * 0.10),
+      fat: Math.round(fat * 0.08),
+      isVegetarian: true,
+      recipe: createRecipe("Yogurt Snack", true)
+    },
+    {
+      name: "Protein Bar",
+      portion: "1 bar",
+      calories: Math.round(tdee * 0.15),
+      protein: Math.round(protein * 0.18),
+      carbs: Math.round(carbs * 0.12),
+      fat: Math.round(fat * 0.10),
+      isVegetarian: false,
+      recipe: createRecipe("Protein Bar", false)
+    },
+    {
+      name: "Turkey and Cheese Roll-Ups",
+      portion: "4 roll-ups",
+      calories: Math.round(tdee * 0.12),
+      protein: Math.round(protein * 0.15),
+      carbs: Math.round(carbs * 0.05),
+      fat: Math.round(fat * 0.12),
+      isVegetarian: false,
+      recipe: createRecipe("Turkey Roll-Ups", false)
+    },
+    {
+      name: "Beef Jerky",
+      portion: "1 oz",
+      calories: Math.round(tdee * 0.10),
+      protein: Math.round(protein * 0.16),
+      carbs: Math.round(carbs * 0.03),
+      fat: Math.round(fat * 0.05),
+      isVegetarian: false,
+      recipe: createRecipe("Jerky Snack", false)
+    },
+    {
+      name: "Hard Boiled Eggs",
+      portion: "2 eggs",
+      calories: Math.round(tdee * 0.10),
+      protein: Math.round(protein * 0.12),
+      carbs: Math.round(carbs * 0.01),
+      fat: Math.round(fat * 0.14),
+      isVegetarian: false,
+      recipe: createRecipe("Egg Snack", false)
+    }
+  ];
+
+  // Generate 5 days of meal plans with different combinations
+  const days = [];
+  for (let i = 0; i < 5; i++) {
+    // Randomly select meals for this day, ensuring a mix of vegetarian and non-vegetarian options
+    const breakfast = {
+      name: `Day ${i + 1} Breakfast`,
+      foods: [breakfastOptions[Math.floor(Math.random() * breakfastOptions.length)]],
+      totalCalories: 0
+    };
+    breakfast.totalCalories = breakfast.foods.reduce((sum, food) => sum + food.calories, 0);
+    
+    const lunch = {
+      name: `Day ${i + 1} Lunch`,
+      foods: [lunchOptions[Math.floor(Math.random() * lunchOptions.length)]],
+      totalCalories: 0
+    };
+    lunch.totalCalories = lunch.foods.reduce((sum, food) => sum + food.calories, 0);
+    
+    const dinner = {
+      name: `Day ${i + 1} Dinner`,
+      foods: [dinnerOptions[Math.floor(Math.random() * dinnerOptions.length)]],
+      totalCalories: 0
+    };
+    dinner.totalCalories = dinner.foods.reduce((sum, food) => sum + food.calories, 0);
+    
+    const snacks = {
+      name: `Day ${i + 1} Snacks`,
+      foods: [snackOptions[Math.floor(Math.random() * snackOptions.length)]],
+      totalCalories: 0
+    };
+    snacks.totalCalories = snacks.foods.reduce((sum, food) => sum + food.calories, 0);
+    
+    days.push({
+      breakfast,
+      lunch,
+      dinner,
+      snacks
+    });
+  }
+  
+  // Calculate total calories and macros for the whole plan
+  const totalCalories = days.reduce((sum, day) => {
+    return sum + day.breakfast.totalCalories + day.lunch.totalCalories + 
+           day.dinner.totalCalories + day.snacks.totalCalories;
+  }, 0) / days.length; // Average daily calories
+  
+  return {
+    id: new Date().getTime().toString(),
+    name: planName,
+    description: planDescription,
+    totalCalories: Math.round(totalCalories),
+    macros: {
+      protein,
+      carbs,
+      fat
+    },
+    days
+  };
+};
