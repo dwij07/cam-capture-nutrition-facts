@@ -1,3 +1,4 @@
+
 import { EnhancedFoodItem } from './enhancedNutritionData';
 
 export const indianFoods: EnhancedFoodItem[] = [
@@ -114,7 +115,7 @@ export const indianFoods: EnhancedFoodItem[] = [
       { name: "Regular serving", grams: 200, default: true },
       { name: "Large serving", grams: 250 }
     ],
-    category: "legumes",
+    category: "protein", // Changed from "legumes" to "protein"
     mealType: ["lunch", "dinner"]
   },
   {
@@ -143,8 +144,8 @@ export const indianFoods: EnhancedFoodItem[] = [
       { name: "1 regular piece", grams: 60, default: true },
       { name: "1 large piece", grams: 90 }
     ],
-    category: "snack",
-    mealType: ["snack", "appetizer"]
+    category: "snacks", // Changed from "snack" to "snacks"
+    mealType: ["snack"] // Removed "appetizer"
   },
   {
     name: "Chicken Biryani",
@@ -201,7 +202,7 @@ export const indianFoods: EnhancedFoodItem[] = [
       { name: "Regular serving", grams: 180, default: true },
       { name: "Large serving", grams: 240 }
     ],
-    category: "vegetable",
+    category: "vegetables", // Changed from "vegetable" to "vegetables"
     mealType: ["lunch", "dinner"]
   },
   {
