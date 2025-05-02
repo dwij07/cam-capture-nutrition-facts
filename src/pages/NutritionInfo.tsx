@@ -217,27 +217,46 @@ const NutritionInfo = () => {
           title="Seasonal Foods"
           icon={Calendar}
           description="Discover what foods are in season now and learn about their unique nutritional benefits."
-          to="/seasonal-foods"
+          to="/seasonal-fruits"
         />
       </div>
 
-      <div className="bg-gradient-to-r from-purple-100 via-purple-50 to-blue-50 dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/20 p-8 rounded-2xl shadow-sm">
+      <div className="bg-gradient-to-r from-purple-300 via-purple-200 to-blue-200 dark:from-purple-900/50 dark:via-purple-800/40 dark:to-blue-900/40 p-8 rounded-2xl shadow-lg mb-10 backdrop-blur-sm border border-purple-100 dark:border-purple-800/30 animate-fade-in">
         <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-purple-700 to-blue-700 dark:from-purple-400 dark:to-blue-400 bg-clip-text text-transparent">Why Track Your Nutrition?</h2>
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="space-y-2">
+          <motion.div 
+            whileHover={{ scale: 1.03 }}
+            className="space-y-2 bg-white/60 dark:bg-gray-800/60 p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-purple-100 dark:border-purple-800/30"
+          >
             <h3 className="font-medium text-purple-700 dark:text-purple-400">Better Health Decisions</h3>
             <p className="text-gray-600 dark:text-gray-300">Make informed choices about your diet by understanding exactly what you're eating.</p>
-          </div>
-          <div className="space-y-2">
+          </motion.div>
+          <motion.div 
+            whileHover={{ scale: 1.03 }}
+            className="space-y-2 bg-white/60 dark:bg-gray-800/60 p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-blue-100 dark:border-blue-800/30"
+          >
             <h3 className="font-medium text-blue-700 dark:text-blue-400">Achieve Your Goals</h3>
             <p className="text-gray-600 dark:text-gray-300">Whether you're looking to lose weight, gain muscle, or maintain a balanced diet.</p>
-          </div>
-          <div className="space-y-2">
+          </motion.div>
+          <motion.div 
+            whileHover={{ scale: 1.03 }}
+            className="space-y-2 bg-white/60 dark:bg-gray-800/60 p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-indigo-100 dark:border-indigo-800/30"
+          >
             <h3 className="font-medium text-indigo-700 dark:text-indigo-400">Track Progress</h3>
             <p className="text-gray-600 dark:text-gray-300">Monitor your nutritional intake and see how your habits change over time.</p>
-          </div>
+          </motion.div>
         </div>
       </div>
+      
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="bg-gradient-to-r from-pink-100 to-orange-100 dark:from-pink-900/30 dark:to-orange-900/30 p-6 rounded-xl shadow-md border border-pink-100 dark:border-pink-800/30 text-center mb-8"
+      >
+        <h3 className="font-bold text-xl mb-2 text-pink-800 dark:text-pink-300">Did You Know?</h3>
+        <p className="text-gray-700 dark:text-gray-300">People who track their meals consistently are 3x more likely to reach their health goals!</p>
+      </motion.div>
     </div>
   );
 };
