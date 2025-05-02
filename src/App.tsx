@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -63,11 +64,7 @@ const App = () => (
               <NutritionInfo />
             </ProtectedRoute>
           } />
-          <Route path="/about" element={
-            <ProtectedRoute>
-              <AboutPage />
-            </ProtectedRoute>
-          } />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/camera" element={
             <ProtectedRoute>
               <CameraPage />

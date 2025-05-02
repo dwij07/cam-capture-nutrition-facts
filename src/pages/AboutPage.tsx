@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -152,9 +153,9 @@ const AboutPage = () => {
               className="mt-8 md:mt-0"
             >
               <img 
-                src="/placeholder.svg" 
-                alt="Healthy Eating Mascot" 
-                className="w-48 md:w-64 h-auto drop-shadow-xl"
+                src="/lovable-uploads/70597d2c-59d3-467b-ab07-d144d6b3b771.png" 
+                alt="Nutrition Facts Magnifying Glass" 
+                className="w-48 md:w-64 h-auto rounded-lg shadow-lg"
               />
             </motion.div>
           </div>
